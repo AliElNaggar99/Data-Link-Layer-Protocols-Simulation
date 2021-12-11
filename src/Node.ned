@@ -20,6 +20,8 @@ package Project;
 //
 simple Node
 {
+    parameters:
+        int delay = default(10);
     gates:
         input in_Coordinates;
         input in;
