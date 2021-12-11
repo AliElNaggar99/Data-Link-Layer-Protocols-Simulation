@@ -36,9 +36,10 @@ void Node::handleMessage(cMessage *msg)
     // TODO - Generated method body
     MyMessage_Base *myMsg = (MyMessage_Base *)msg;
     //assume i have it
-    std::string modtype = MessageQueueEffect[0];
-    MessageQueueEffect.pop_back();
+    std::string modtype = MessageQueueEffect[CurrentMsg];
+    myMsg->setM_Payload(MessageQueue[CurrentMsg]);
     ModifyMessage(modtype, myMsg);
+    CurrentMsg++;
 }
 
 void Node::Initial(cMessage *msg)
