@@ -37,7 +37,7 @@ char computeCrcAtSender(string line){
         // if MSB = 1 -> do xor else we need to shift 
         if(window[divisorSize-1]==1){
             window ^= divisorBitSet ;
-			cout << window.to_string() << endl; 	
+			//cout << window.to_string() << endl; 	
 		}
         
         int shifts = 0 ;
@@ -69,7 +69,7 @@ char computeCrcAtSender(string line){
     }
 	if(window[divisorSize-1]==1)
 		window ^= divisorBitSet ;
-	cout << window.to_string() << endl;
+	//cout << window.to_string() << endl;
     crc = (window).to_ullong();
     return crc;
 }
@@ -107,7 +107,7 @@ int computeCrcAtReciever(string line, char crc){
         // if MSB = 1 -> do xor else we need to shift 
         if(window[divisorSize-1]==1){
             window ^= divisorBitSet ;
-			cout << window.to_string() << endl; 	
+			//cout << window.to_string() << endl; 	
 		}
         
         int shifts = 0 ;
