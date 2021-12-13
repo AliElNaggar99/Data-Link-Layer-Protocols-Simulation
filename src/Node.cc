@@ -22,15 +22,17 @@
 Define_Module(Node);
 
 
-
+std::ofstream MyFile ("pair01.txt");
 
 void Node::initialize()
 {
     // TODO - Generated method body
+
 }
 
 void Node::handleMessage(cMessage *msg)
 {
+    //MyFile.open("pair01.txt");
     //this will initial if it is not Initialized
     if (!isInitialized)
     {
@@ -43,7 +45,7 @@ void Node::handleMessage(cMessage *msg)
     if(MsgRecived->getM_Type() == Self_Message)
     {
         //Start sending
-        cancelAndDelete(msg);
+        //cancelAndDelete(msg);
         SendMsg();
     }
     //Ana Receiver
@@ -53,23 +55,29 @@ void Node::handleMessage(cMessage *msg)
         if(MsgRecived->getSeq_Num() == CurrentSeqNum)
         {
             ReceiveData(msg,MsgRecived);
+            CurrentSeqNum++;
         }
         //If not same SeqNum, it means this message is duplicated and should be discard and log what happend
         else
         {
           ///Logs
+            MyFile<<" - "<<getName()<<" Received Message with id = "<< to_string(MsgRecived->getMessageId()) <<" and Content = "<<MsgRecived->getM_Payload()<<" at "<<to_string((int)simTime().dbl())<<" and It is duplicated, so it will be discard"<<endl;
+            //MyFile.close();
+            MyMessage_Base* ACKMsg = new MyMessage_Base();
+            ACKMsg->setM_Type(ACK);
+            sendDelayed((cMessage *)ACKMsg, getParentModule()->par("delay").intValue(), "out");
         }
-        CurrentSeqNum++;
     }
     else if(MsgRecived->getM_Type() == ACK || MsgRecived->getM_Type() == NACK)
     {
         //Ack Rececived
         //Get new msg and send
         CurrentMsg++;
-        cancelAndDelete(msg);
-        if(CurrentMsg==MessageQueueEffect.size()-1)
+        //cancelAndDelete(msg);
+        if(CurrentMsg == MessageQueue.size()-1)
         {
             ///////End Simulation
+            std::cout<<"Finished"<<std::endl;
             return;
         }
         SendMsg();
@@ -84,21 +92,25 @@ void Node::ReceiveData(cMessage *msg,MyMessage_Base* MsgRecived)
     std::string MsgPayLoad = MsgRecived->getM_Payload();
     int reminder = computeCrcAtReciever(MsgPayLoad,MsgRecived->getTrailer());
     std::string MsgPayLoadDeframe = DeFrame(MsgPayLoad);
-    cancelAndDelete(msg);
+    //cancelAndDelete(msg);
     if(reminder == 0)
     {
         //No error Happened log and Send ACK
+        MyFile<<" - "<<getName()<<" Received Message with id = "<< to_string(MsgRecived->getMessageId()) <<" and Content = "<<MsgRecived->getM_Payload()<<" at "<<to_string((int)simTime().dbl())<<" without Modification"<<endl;
+        //MyFile.close();
         MyMessage_Base* ACKMsg = new MyMessage_Base();
         ACKMsg->setM_Type(ACK);
-        sendDelayed((cMessage *)ACKMsg, getParentModule()->par("delay").doubleValue(), "out");
+        sendDelayed((cMessage *)ACKMsg, getParentModule()->par("delay").intValue(), "out");
     }
     else
     {
         //Error Happpened log and Send NACK
         //No error Happened log and Send ACK
+        MyFile<<" - "<<getName()<<" Received Message with id = "<< to_string(MsgRecived->getMessageId()) <<" and Content = "<<MsgRecived->getM_Payload()<<" at "<<to_string((int)simTime().dbl())<<" with Modification"<<endl;
+       // MyFile.close();
         MyMessage_Base* ACKMsg = new MyMessage_Base();
         ACKMsg->setM_Type(NACK);
-        sendDelayed((cMessage *)ACKMsg, getParentModule()->par("delay").doubleValue(), "out");
+        sendDelayed((cMessage *)ACKMsg, getParentModule()->par("delay").intValue(), "out");
     }
 }
 
@@ -114,8 +126,8 @@ void Node::SendMsg()
       myMsg->setTrailer(CRC);
       myMsg->setSendingTime((int)simTime().dbl());
       //Seq_Num will increase in ACK only
-      myMsg->setSeq_Num(CurrentSeqNum);
-      CurrentMsg++;
+      myMsg->setSeq_Num(CurrentMsg);
+      myMsg->setMessageId(CurrentMsg);
       ModifyMessage(modtype, myMsg);
 }
 
@@ -169,9 +181,9 @@ void Node::ModifyMessage(std::string modificationType, MyMessage_Base *msg)
         // 4) do the modification to single bit
 
         int ChosenWord = uniform(0, payload.size());
-        int ChosenBit = uniform(0, 9);
+        int ChosenBit = uniform(0, 8);
         //Logs
-        std::cout << "The Error will happen in word number " << ChosenWord << " in Bit Number " << ChosenBit << endl;
+        //MyFile << "The Error will happen in word number " << ChosenWord << " in Bit Number " << ChosenBit << endl;
         myBits[ChosenWord][ChosenBit] = ~myBits[ChosenWord][ChosenBit];
 
         //5) loop on the vector convert every bitset to char
@@ -181,9 +193,17 @@ void Node::ModifyMessage(std::string modificationType, MyMessage_Base *msg)
             final += (char)myBits[i].to_ulong();
         }
         //6) convert modified payload to cstring
+        std::cout<<final<<endl;
         msg->setM_Payload(final.c_str());
+        std::cout <<msg->getM_Payload()<<endl;
         //7) send the modified message
-        send((cMessage *)msg, "out");
+        if(modificationType[1] == '0' && modificationType[2] == '0' && modificationType[3] == '0')
+        {
+            send((cMessage *)msg, "out");
+            MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<to_string((int)simTime().dbl())<<" with Modification"<<endl;
+           // MyFile.close();
+        }
+
     }
 
     if (modificationType[1] == '1')
@@ -194,20 +214,28 @@ void Node::ModifyMessage(std::string modificationType, MyMessage_Base *msg)
             // 1) No send but must write in log file
 
         //TimeOut After
+        MyFile<<" - "<<getName()<<" drops Message with id = "<< to_string(msg->getMessageId()) <<"at "<<to_string((int)simTime().dbl())<<endl;
+        //MyFile.close();
         MyMessage_Base *myMsg = new MyMessage_Base();
-        myMsg->setM_Type(Self_Message);
+        myMsg->setM_Type(ACK);
         scheduleAt(simTime() + 2, (cMessage*)myMsg);
+
     }
 
     if (modificationType[2] == '1')
     {
         /* Duplicated: the whole message should be sent
          twice with a small difference in time (0.01s)*/
-
+         std::string isModified ="";
+         if(modificationType[0] == '1')
+             isModified = " with Modification";
         // 1) send the first message
         send((cMessage *)msg, "out");
+        MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<to_string((int)simTime().dbl())<<isModified<<endl;
         // 2) send the second message with the same message after 0.01 second
-        sendDelayed((cMessage *)msg, 0.01, "out");
+        //sendDelayed((cMessage *)msg, 0.01, "out");
+        MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<to_string((int)simTime().dbl())<<isModified<<endl;
+        //MyFile.close();
     }
 
     if (modificationType[3] == '1')
@@ -216,9 +244,20 @@ void Node::ModifyMessage(std::string modificationType, MyMessage_Base *msg)
         using the delay value from the .ini file. [dont use busy waiting].*/
 
         // 1)get delay time from omnetpp.ini
-        sendDelayed((cMessage *)msg, getParentModule()->par("delay").doubleValue(), "out");
+        std::string isModified ="";
+        if(modificationType[0] == '1')
+               isModified = " with Modification";
+        MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<to_string((int)simTime().dbl())<<isModified<<"Delayed with time = "<<to_string(getParentModule()->par("delay").intValue())<<endl;
+        sendDelayed((cMessage *)msg, getParentModule()->par("delay").intValue(), "out");
+        //MyFile.close();
     }
 
+    if(modificationType[0] == '0' && modificationType[1] == '0' && modificationType[2] == '0' && modificationType[3] == '0')
+    {
+        send((cMessage *)msg, "out");
+        MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<to_string((int)simTime().dbl())<<endl;
+        //MyFile.close();
+    }
 
 }
 

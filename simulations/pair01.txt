@@ -1,0 +1,8 @@
+ - node0 Sends Message with id = 0 and Content = $is the reproductive/$ structure found in flowering plants$ at 3
+ - node1 Received Message with id = 0 and Content = $is the reproductive/$ structure found in flowering plants$ at 3 without Modification
+ - node0 Sends Message with id = 1 and Content = $A flower, sometimes known at 5 with Modification
+ - node0 Sends Message with id = 1 and Content = $A flower, sometimes known at 5 with Modification
+ - node1 Received Message with id = 1 and Content = $A flower, sometimes known at 5 with Modification
+ - node0 drops Message with id = 2at 7
+ - node0 Sends Message with id = 3 and Content = $The biological function of a flower is to facilitate reproduction,$ at 9
+ - node1 Received Message with id = 3 and Content = $The biological function of a flower is to facilitate reproduction,$ at 9 and It is duplicated, so it will be discard

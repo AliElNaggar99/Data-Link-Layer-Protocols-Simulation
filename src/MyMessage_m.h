@@ -67,7 +67,7 @@ class MyMessage_Base : public ::omnetpp::cPacket
   protected:
     int messageId;
     int sendingTime;
-    ::omnetpp::opp_string M_Payload;
+   std::string M_Payload;
     char Trailer;
     int Seq_Num;
     M_Type M_Type_Value;
