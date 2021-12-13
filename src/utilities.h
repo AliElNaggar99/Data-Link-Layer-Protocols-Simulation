@@ -143,6 +143,11 @@ int computeCrcAtReciever(string line, char crc){
     remainder = (window ).to_ullong();
     return remainder;
 }
+
+
+
+
+
 /////////////////////////////////////////////////////////////////////
 
 

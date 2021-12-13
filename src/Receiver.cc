@@ -13,15 +13,18 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package Project;
+#include "Receiver.h"
 
-//
-// TODO auto-generated module
-//
-simple Node
+Define_Module(Receiver);
+
+void Receiver::initialize()
 {
-    gates:
-        input in_Coordinates;
-        input in;
-        output out;
+    // TODO - Generated method body
 }
+
+void Receiver::handleMessage(cMessage *msg)
+{
+    // TODO - Generated method body
+}
+
+

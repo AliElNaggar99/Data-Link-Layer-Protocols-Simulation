@@ -180,7 +180,7 @@ inline std::ostream& operator<<(std::ostream& out, const std::vector<T,A>& vec)
 MyMessage_Base::MyMessage_Base(const char *name, short kind) : ::omnetpp::cPacket(name,kind)
 {
     this->Seq_Num = 0;
-    this->M_Type = 0;
+    this->M_Type_Value = ACK;
 }
 
 MyMessage_Base::MyMessage_Base(const MyMessage_Base& other) : ::omnetpp::cPacket(other)
@@ -203,7 +203,7 @@ MyMessage_Base& MyMessage_Base::operator=(const MyMessage_Base& other)
 void MyMessage_Base::copy(const MyMessage_Base& other)
 {
     this->Seq_Num = other.Seq_Num;
-    this->M_Type = other.M_Type;
+    this->M_Type_Value = other.M_Type_Value;
     this->M_Payload = other.M_Payload;
     this->mycheckbits = other.mycheckbits;
 }
@@ -212,7 +212,7 @@ void MyMessage_Base::parsimPack(omnetpp::cCommBuffer *b) const
 {
     ::omnetpp::cPacket::parsimPack(b);
     doParsimPacking(b,this->Seq_Num);
-    doParsimPacking(b,this->M_Type);
+    doParsimPacking(b,this->M_Type_Value);
     doParsimPacking(b,this->M_Payload);
     doParsimPacking(b,this->mycheckbits);
 }
@@ -221,7 +221,7 @@ void MyMessage_Base::parsimUnpack(omnetpp::cCommBuffer *b)
 {
     ::omnetpp::cPacket::parsimUnpack(b);
     doParsimUnpacking(b,this->Seq_Num);
-    doParsimUnpacking(b,this->M_Type);
+    doParsimUnpacking(b,this->M_Type_Value);
     doParsimUnpacking(b,this->M_Payload);
     doParsimUnpacking(b,this->mycheckbits);
 }
@@ -236,14 +236,14 @@ void MyMessage_Base::setSeq_Num(int Seq_Num)
     this->Seq_Num = Seq_Num;
 }
 
-int MyMessage_Base::getM_Type() const
+M_Type MyMessage_Base::getM_Type() const
 {
-    return this->M_Type;
+    return this->M_Type_Value;
 }
 
-void MyMessage_Base::setM_Type(int M_Type)
+void MyMessage_Base::setM_Type(M_Type M_Type_In)
 {
-    this->M_Type = M_Type;
+    this->M_Type_Value = M_Type_In;
 }
 
 const char * MyMessage_Base::getM_Payload() const
@@ -480,7 +480,7 @@ bool MyMessageDescriptor::setFieldValueAsString(void *object, int field, int i, 
     MyMessage_Base *pp = (MyMessage_Base *)object; (void)pp;
     switch (field) {
         case 0: pp->setSeq_Num(string2long(value)); return true;
-        case 1: pp->setM_Type(string2long(value)); return true;
+        case 1: pp->setM_Type(ACK); return true;
         case 2: pp->setM_Payload((value)); return true;
         default: return false;
     }

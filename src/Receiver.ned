@@ -13,14 +13,15 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package Project;
-
 //
 // TODO auto-generated module
 //
-simple Node
+
+package Project;
+
+simple Receiver
 {
-    gates:
+     gates:
         input in_Coordinates;
         input in;
         output out;

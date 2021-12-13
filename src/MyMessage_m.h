@@ -60,12 +60,18 @@ typedef  std::bitset<8> bits;
  * Register_Class(MyMessage)
  * </pre>
  */
+
+#include "M_Type.h"
 class MyMessage_Base : public ::omnetpp::cPacket
 {
   protected:
-    int Seq_Num;
-    int M_Type;
+    int messageId;
+    int sendingTime;
     ::omnetpp::opp_string M_Payload;
+    char Trailer;
+    int Seq_Num;
+    M_Type M_Type_Value;
+
     bits mycheckbits;
 
   private:
@@ -91,13 +97,24 @@ class MyMessage_Base : public ::omnetpp::cPacket
     // field getter/setter methods
     virtual int getSeq_Num() const;
     virtual void setSeq_Num(int Seq_Num);
-    virtual int getM_Type() const;
-    virtual void setM_Type(int M_Type);
+    virtual M_Type getM_Type() const;
+    virtual void setM_Type(M_Type M_Type_in);
     virtual const char * getM_Payload() const;
     virtual void setM_Payload(const char * M_Payload);
     virtual bits& getMycheckbits();
     virtual const bits& getMycheckbits() const {return const_cast<MyMessage_Base*>(this)->getMycheckbits();}
     virtual void setMycheckbits(const bits& mycheckbits);
+
+    virtual int getMessageId() const{return (this)->messageId;}
+    virtual void setMessageId(int MessageId){(this)->messageId = MessageId;}
+
+
+    virtual int getSendingTime() const {return (this)->sendingTime;}
+    virtual void setSendingTime(int Time){(this)->sendingTime = Time;}
+
+
+    virtual char getTrailer() const {return (this)->Trailer;}
+    virtual void setTrailer(char CRC){(this)->Trailer = CRC;}
 };
 
 

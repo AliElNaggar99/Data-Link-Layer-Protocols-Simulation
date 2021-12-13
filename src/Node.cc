@@ -17,8 +17,12 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include "utilities.h"
 
 Define_Module(Node);
+
+
+
 
 void Node::initialize()
 {
@@ -31,15 +35,191 @@ void Node::handleMessage(cMessage *msg)
     if (!isInitialized)
     {
         Initial(msg);
+        return;
+    }
+    //Cancel and Delete don't forget
+    //To wake Up from Coordinator
+    MyMessage_Base* MsgRecived = (MyMessage_Base*) msg;
+    if(MsgRecived->getM_Type() == Self_Message)
+    {
+        //Start sending
+        cancelAndDelete(msg);
+        SendMsg();
+    }
+    //Ana Receiver
+    else if(MsgRecived->getM_Type() == DATA)
+    {
+        //Check on SeqNum that I should recievce
+        if(MsgRecived->getSeq_Num() == CurrentSeqNum)
+        {
+            ReceiveData(msg,MsgRecived);
+        }
+        //If not same SeqNum, it means this message is duplicated and should be discard and log what happend
+        else
+        {
+          ///Logs
+        }
+        CurrentSeqNum++;
+    }
+    else if(MsgRecived->getM_Type() == ACK || MsgRecived->getM_Type() == NACK)
+    {
+        //Ack Rececived
+        //Get new msg and send
+        CurrentMsg++;
+        cancelAndDelete(msg);
+        if(CurrentMsg==MessageQueueEffect.size()-1)
+        {
+            ///////End Simulation
+            return;
+        }
+        SendMsg();
+    }
+    // TODO - Generated method body
+
+
+}
+
+void Node::ReceiveData(cMessage *msg,MyMessage_Base* MsgRecived)
+{
+    std::string MsgPayLoad = MsgRecived->getM_Payload();
+    int reminder = computeCrcAtReciever(MsgPayLoad,MsgRecived->getTrailer());
+    std::string MsgPayLoadDeframe = DeFrame(MsgPayLoad);
+    cancelAndDelete(msg);
+    if(reminder == 0)
+    {
+        //No error Happened log and Send ACK
+        MyMessage_Base* ACKMsg = new MyMessage_Base();
+        ACKMsg->setM_Type(ACK);
+        sendDelayed((cMessage *)ACKMsg, getParentModule()->par("delay").doubleValue(), "out");
+    }
+    else
+    {
+        //Error Happpened log and Send NACK
+        //No error Happened log and Send ACK
+        MyMessage_Base* ACKMsg = new MyMessage_Base();
+        ACKMsg->setM_Type(NACK);
+        sendDelayed((cMessage *)ACKMsg, getParentModule()->par("delay").doubleValue(), "out");
+    }
+}
+
+void Node::SendMsg()
+{
+      //assume i have it
+      MyMessage_Base* myMsg = new MyMessage_Base();
+      std::string modtype = MessageQueueEffect[CurrentMsg];
+      std::string MessageAfterFraming = Frame(MessageQueue[CurrentMsg]);
+      char CRC = computeCrcAtSender(MessageAfterFraming);
+      myMsg->setM_Type(DATA);
+      myMsg->setM_Payload(MessageAfterFraming.c_str());
+      myMsg->setTrailer(CRC);
+      myMsg->setSendingTime((int)simTime().dbl());
+      //Seq_Num will increase in ACK only
+      myMsg->setSeq_Num(CurrentSeqNum);
+      CurrentMsg++;
+      ModifyMessage(modtype, myMsg);
+}
+
+std::string Node::Frame(std::string Msg)
+{
+    std:: string MsgAfterFraming = "$";
+    for(int i = 0 ; i < Msg.size() ; i++)
+    {
+        if(Msg[i] == '$' || Msg[i] == '/')
+        {
+            MsgAfterFraming+="/";
+        }
+        MsgAfterFraming+=Msg[i];
+    }
+    MsgAfterFraming+="$";
+    return MsgAfterFraming;
+}
+
+std::string Node::DeFrame(std::string Msg)
+{
+    Msg = Msg.substr(1, Msg.size()-2);
+    std:: string MsgAfterDeFraming ="";
+    for(int i = 0 ; i < Msg.size() ; i++)
+    {
+        if(Msg[i] == '/')
+        {
+           i++;
+        }
+        MsgAfterDeFraming+=Msg[i];
+    }
+    return MsgAfterDeFraming;
+}
+
+void Node::ModifyMessage(std::string modificationType, MyMessage_Base *msg)
+{
+    if (modificationType[0] == '1')
+    {
+        /*Modification: This is done to any randomly selected single bit on the payload
+         after the byte stuffing. The modification could not happen to other message fields*/
+
+        //1)get payload from message
+        std::string payload = msg->getM_Payload();
+        //2) define the vector of the bitsets
+        std::vector<std::bitset<8>> myBits;
+        //3)loop on the characters and append them to the vector
+        for (int i = 0; i < payload.size(); i++)
+        {
+            std::bitset<8> charFromMsg(payload[i]);
+            myBits.push_back(charFromMsg);
+        }
+        // 4) do the modification to single bit
+
+        int ChosenWord = uniform(0, payload.size());
+        int ChosenBit = uniform(0, 9);
+        //Logs
+        std::cout << "The Error will happen in word number " << ChosenWord << " in Bit Number " << ChosenBit << endl;
+        myBits[ChosenWord][ChosenBit] = ~myBits[ChosenWord][ChosenBit];
+
+        //5) loop on the vector convert every bitset to char
+        std::string final = "";
+        for (std::size_t i = 0; i < myBits.size(); i++)
+        {
+            final += (char)myBits[i].to_ulong();
+        }
+        //6) convert modified payload to cstring
+        msg->setM_Payload(final.c_str());
+        //7) send the modified message
+        send((cMessage *)msg, "out");
     }
 
-    // TODO - Generated method body
-    MyMessage_Base *myMsg = (MyMessage_Base *)msg;
-    //assume i have it
-    std::string modtype = MessageQueueEffect[CurrentMsg];
-    myMsg->setM_Payload(MessageQueue[CurrentMsg]);
-    ModifyMessage(modtype, myMsg);
-    CurrentMsg++;
+    if (modificationType[1] == '1')
+    {
+            /*Loss: the whole message should not be sent using the send function,
+             but it should be included in the log file and the system calculations*/
+
+            // 1) No send but must write in log file
+
+        //TimeOut After
+        MyMessage_Base *myMsg = new MyMessage_Base();
+        myMsg->setM_Type(Self_Message);
+        scheduleAt(simTime() + 2, (cMessage*)myMsg);
+    }
+
+    if (modificationType[2] == '1')
+    {
+        /* Duplicated: the whole message should be sent
+         twice with a small difference in time (0.01s)*/
+
+        // 1) send the first message
+        send((cMessage *)msg, "out");
+        // 2) send the second message with the same message after 0.01 second
+        sendDelayed((cMessage *)msg, 0.01, "out");
+    }
+
+    if (modificationType[3] == '1')
+    {
+        /* Delay: the whole message should be delayed 
+        using the delay value from the .ini file. [dont use busy waiting].*/
+
+        // 1)get delay time from omnetpp.ini
+        sendDelayed((cMessage *)msg, getParentModule()->par("delay").doubleValue(), "out");
+    }
+
+
 }
 
 void Node::Initial(cMessage *msg)
@@ -69,7 +249,9 @@ void Node::Initial(cMessage *msg)
     {
         //get last digit in the string as it represent the start time
         int Start = std::stoi(MessageSplit[MessageSplit.size() - 1]);
-        scheduleAt(simTime() + Start, new cMessage(""));
+        MyMessage_Base *myMsg = new MyMessage_Base();
+        myMsg->setM_Type(Self_Message);
+        scheduleAt(simTime() + Start, (cMessage*)myMsg);
     }
 }
 
@@ -83,66 +265,5 @@ void Node::ReadFromFile(std::string FileName)
         // Process str
         MessageQueueEffect.push_back(str.substr(0, 4));
         MessageQueue.push_back(str.substr(5));
-    }
-}
-void Node::ModifyMessage(std::string modificationType, MyMessage_Base *msg)
-{
-    if (modificationType[0] == 1)
-    {
-        /*Modification: This is done to any randomly selected single bit on the payload
-         after the byte stuffing. The modification could not happen to other message fields*/
-
-        //1)get payload from message
-        std::string payload = msg->getM_Payload();
-        //2) define the vector of the bitsets
-        std::vector<std::bitset<8>> myBits;
-        //3)loop on the characters and append them to the vector
-        for (int i = 0; i < payload.size(); i++)
-        {
-            std::bitset<8> charFromMsg(payload[i]);
-            myBits.push_back(charFromMsg);
-        }
-        // 4) do the modification to single bit
-
-        int ChosenWord = uniform(0, payload.size());
-        int ChosenBit = uniform(0, 9);
-        std::cout << "The Error will happen in word number " << ChosenWord << " in Bit Number " << ChosenBit << endl;
-        myBits[ChosenWord][ChosenBit] = ~myBits[ChosenWord][ChosenBit];
-
-        //5) loop on the vector convert every bitset to char
-        std::string final = "";
-        for (std::size_t i = 0; i < myBits.size(); i++)
-        {
-            final += (char)myBits[i].to_ulong();
-        }
-        //6) convert modified payload to cstring
-        msg->setM_Payload(final.c_str());
-        //7) send the modified message
-        send((cMessage *)msg, "out");
-    }
-    else if (modificationType[1] == 1)
-    {
-        /* Duplicated: the whole message should be sent
-         twice with a small difference in time (0.01s)*/
-
-        // 1) send the first message
-        send((cMessage *)msg, "out");
-        // 2) send the second message with the same message after 0.01 second
-        sendDelayed((cMessage *)msg, 0.01, "out");
-    }
-    else if (modificationType[2] == 1)
-    {
-        /* Delay: the whole message should be delayed 
-        using the delay value from the .ini file. [dont use busy waiting].*/
-
-        // 1)get delay time from omnetpp.ini
-        sendDelayed((cMessage *)msg, par("delay"), "out");
-    }
-    else if (modificationType[3] == 1)
-    {
-        /*Loss: the whole message should not be sent using the send function,
-         but it should be included in the log file and the system calculations*/
-
-        // 1) No send but must write in log file
     }
 }

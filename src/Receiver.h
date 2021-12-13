@@ -13,15 +13,22 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package Project;
+#ifndef __DATA_LINK_LAYER_PROTOCOLS_SIMULATION_RECEIVER_H_
+#define __DATA_LINK_LAYER_PROTOCOLS_SIMULATION_RECEIVER_H_
 
-//
-// TODO auto-generated module
-//
-simple Node
+#include <omnetpp.h>
+#include "MyMessage_m.h"
+using namespace omnetpp;
+
+/**
+ * TODO - Generated class
+ */
+class Receiver : public cSimpleModule
 {
-    gates:
-        input in_Coordinates;
-        input in;
-        output out;
-}
+  protected:
+    virtual void initialize();
+    virtual void handleMessage(cMessage *msg);
+    std::string Deframe(std::string Msg);
+};
+
+#endif

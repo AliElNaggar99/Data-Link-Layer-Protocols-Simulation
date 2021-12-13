@@ -31,6 +31,7 @@ class Node : public cSimpleModule
   std::vector<std::string> MessageQueue;
   int CurrentMsg = 0;
   bool isInitialized = false;
+  int CurrentSeqNum = 0;
 
 protected:
   virtual void initialize();
@@ -38,6 +39,10 @@ protected:
   void Initial(cMessage *msg);
   void ReadFromFile(std::string FileName);
   void ModifyMessage(std::string modificationType, MyMessage_Base *msg);
+  std::string Frame(std::string Msg);
+  std::string DeFrame(std::string Msg);
+  void SendMsg();
+  void ReceiveData(cMessage *msg,MyMessage_Base* MsgRecived);
 };
 
 #endif

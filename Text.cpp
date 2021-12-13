@@ -2,24 +2,41 @@
 #include <string>
 #include <iostream>
 
+
+std::string Frame(std::string Msg)
+{
+    std:: string MsgAfterFraming = "$";
+    for(int i = 0 ; i < Msg.size() ; i++)
+    {
+        if(Msg[i] == '$' || Msg[i] == '/')
+        {
+            MsgAfterFraming+="/";
+        }
+        MsgAfterFraming+=Msg[i];
+    }
+    MsgAfterFraming+="$";
+    return MsgAfterFraming;
+}
+
+std::string Deframe(std::string Msg)
+{
+    Msg = Msg.substr(1, Msg.size()-2);
+    std:: string MsgAfterDeFraming ="";
+    for(int i = 0 ; i < Msg.size() ; i++)
+    {
+        if(Msg[i] == '/')
+        {
+           i++;
+        }
+        MsgAfterDeFraming+=Msg[i];
+    }
+    return MsgAfterDeFraming;
+}
+
 int main() 
 { 
  
-    std::ifstream file ("coordinator.txt");
-    std::string str; 
-
-    std::cout<<"start"<<std::endl;;
-    if(file.is_open())
-    {
-        std::cout<<"Opemd"<<std::endl;;
-    }
-    else
-    {
-        std::cout<<"not opened"<<std::endl;;
-    }
-    while (std::getline(file, str))
-    {
-        // Process str
-        std::cout<<str<<std::endl;
-    }
+    std::string Frame1 = Frame("He$whoA///AreYou$");
+    std::cout<<Frame1<<std::endl;
+    std::cout<<Deframe(Frame1)<<std::endl;
 }
