@@ -206,6 +206,10 @@ void MyMessage_Base::copy(const MyMessage_Base& other)
     this->M_Type_Value = other.M_Type_Value;
     this->M_Payload = other.M_Payload;
     this->mycheckbits = other.mycheckbits;
+    this->messageId = other.messageId;
+    this->sendingTime = other.sendingTime;
+    this->Trailer = other.Trailer;
+
 }
 
 void MyMessage_Base::parsimPack(omnetpp::cCommBuffer *b) const

@@ -63,7 +63,9 @@ void Node::handleMessage(cMessage *msg)
           ///Logs
             MyFile<<" - "<<getName()<<" Received Message with id = "<< to_string(MsgRecived->getMessageId()) <<" and Content = "<<MsgRecived->getM_Payload()<<" at "<<to_string((int)simTime().dbl())<<" and It is duplicated, so it will be discard"<<endl;
             //MyFile.close();
+            cancelAndDelete(msg);
             MyMessage_Base* ACKMsg = new MyMessage_Base();
+            ACKMsg->setSeq_Num(CurrentSeqNum);
             ACKMsg->setM_Type(ACK);
             sendDelayed((cMessage *)ACKMsg, getParentModule()->par("delay").intValue(), "out");
         }
@@ -72,9 +74,14 @@ void Node::handleMessage(cMessage *msg)
     {
         //Ack Rececived
         //Get new msg and send
+        if(CurrentMsg == 1+MsgRecived->getSeq_Num())
+        {
+            cancelAndDelete(msg);
+            return;
+        }
         CurrentMsg++;
         //cancelAndDelete(msg);
-        if(CurrentMsg == MessageQueue.size()-1)
+        if(CurrentMsg == MessageQueue.size())
         {
             ///////End Simulation
             std::cout<<"Finished"<<std::endl;
@@ -214,7 +221,7 @@ void Node::ModifyMessage(std::string modificationType, MyMessage_Base *msg)
             // 1) No send but must write in log file
 
         //TimeOut After
-        MyFile<<" - "<<getName()<<" drops Message with id = "<< to_string(msg->getMessageId()) <<"at "<<to_string((int)simTime().dbl())<<endl;
+        MyFile<<" - "<<getName()<<" drops Message with id = "<< to_string(msg->getMessageId()) <<" at "<<to_string((int)simTime().dbl())<<endl;
         //MyFile.close();
         MyMessage_Base *myMsg = new MyMessage_Base();
         myMsg->setM_Type(ACK);
@@ -233,8 +240,9 @@ void Node::ModifyMessage(std::string modificationType, MyMessage_Base *msg)
         send((cMessage *)msg, "out");
         MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<to_string((int)simTime().dbl())<<isModified<<endl;
         // 2) send the second message with the same message after 0.01 second
-        //sendDelayed((cMessage *)msg, 0.01, "out");
-        MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<to_string((int)simTime().dbl())<<isModified<<endl;
+        MyMessage_Base* NewMsg = new MyMessage_Base(*msg);
+        sendDelayed((cMessage *)NewMsg, 0.01, "out");
+        MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<to_string((int)simTime().dbl()+0.01)<<isModified<<endl;
         //MyFile.close();
     }
 
