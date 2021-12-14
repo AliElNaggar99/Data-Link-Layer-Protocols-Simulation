@@ -1,0 +1,24 @@
+ - node0 Sends Message with id = 0 and Content = $A flower, sometimes known0as a bloom or blossom$ at 3.00 with Modification Ack number 0
+ - node1 Received Message with id = 0 and Content = $A flower, sometimes known0as a bloom or blossom$ at 3.00 with Modification Ack number 0
+ - node0 Sends Message with id = 0 and Content = $A flower, sometimes known0as a bloom or blossom$ at 3.01 with Modification Ack number 0
+ - node1 Received Message with id = 0 and Content = $A flower, sometimes known0as a bloom or blossom$ at 3.01 and It is duplicated, so it will be discard Ack number 0
+ - node0 Sends Message with id = 1 and Content = $is the reproductive/$ structure found in flowering plants$ at 3.20 Ack number 1
+ - node1 Received Message with id = 1 and Content = $is the reproductive/$ structure found in flowering plants$ at 3.20 without Modification Ack number 1
+ - node0 drops Message with id = 2 at 3.40
+ - node0 Sends Message with id = 3 and Content = $The biological function of a flower is to facilitate reproduction,$ at 4.40 Ack number 2
+ - node1 Received Message with id = 3 and Content = $The biological function of a flower is to facilitate reproduction,$ at 4.40 without Modification Ack number 2
+ - node0 Sends Message with id = 4 and Content = $usually by providing a mechanism for the union of sperm with eggs.$ at 4.60 Delayed with time = 0.200000 Ack number 3
+ - node1 Received Message with id = 4 and Content = $usually by providing a mechanism for the union of sperm with eggs.$ at 4.80 without Modification Ack number 3
+ - node0 Sends Message with id = 5 and Content = $Flowers may facilitate outcrossing/$$ at 5.00 Ack number 4
+ - node1 Received Message with id = 5 and Content = $Flowers may facilitate outcrossing/$$ at 5.00 without Modification Ack number 4
+ - node0 Sends Message with id = 6 and Content = $(fusion of sperm and eggs from different individuals in a population)$ at 5.20 Ack number 5
+ - node1 Received Message with id = 6 and Content = $(fusion of sperm and eggs from different individuals in a population)$ at 5.20 without Modification Ack number 5
+ ------------------------------------------------------------- 
+ - node0 end of input file 
+ - Total Transmission time : 5.40
+ - correct : 5
+ - duplicate : 1
+ - losses : 1
+ - incorrect : 1
+ - Total number of Transmission : 8
+ - Throughput : 0.93

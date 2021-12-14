@@ -30,8 +30,16 @@ class Node : public cSimpleModule
   std::vector<std::string> MessageQueueEffect;
   std::vector<std::string> MessageQueue;
   int CurrentMsg = 0;
+  int MsgId = 0;
+  int CurrentMsgIndex = 0; // as when we drop it will be incremented and CurrentMsg not ( to sync)
   bool isInitialized = false;
   int CurrentSeqNum = 0;
+
+  // calculations
+  int duplicate = 0 ;
+  int losses = 0 ;
+  int correct = 0 ;
+  int incorrect = 0 ;
 
 protected:
   virtual void initialize();
@@ -43,6 +51,7 @@ protected:
   std::string DeFrame(std::string Msg);
   void SendMsg();
   void ReceiveData(cMessage *msg,MyMessage_Base* MsgRecived);
+  void Timer();
 };
 
 #endif

@@ -7,7 +7,7 @@ package Project;
 network Network
 {
     parameters:
-        int delay = default(2);
+        double delay = default(0.2);
     @display("bgb=650,512");
     types:
     submodules:

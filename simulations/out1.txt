@@ -1,0 +1,42 @@
+ - node0 Sends Message with id = 0 and Content = $The violin, sometimes known as a fiddle$ at 3.00 Ack number 0
+ - node1 Received Message with id = 0 and Content = $The violin, sometimes known as a fiddle$ at 3.00 without Modification Ack number 0
+ - node0 Sends Message with id = 1 and Content = $is a wooden chordophone (string instrument)$ at 3.20 Ack number 1
+ - node1 Received Message with id = 1 and Content = $is a wooden chordophone (string instrument)$ at 3.20 without Modification Ack number 1
+ - node0 Sends Message with id = 1 and Content = $is a wooden chordophone (string instrument)$ at 3.21 with Modification Ack number 1
+ - node1 Received Message with id = 1 and Content = $is a wooden chordophone (string instrument)$ at 3.21 and It is duplicated, so it will be discard Ack number 1
+ - node0 drops Message with id = 2 at 3.40
+ - node0 drops Message with id = 3 at 4.40
+ - node0 Sends Message with id = 4 and Content = $It is the smallest and thus highest-pitched instrument$ at 5.40 Ack number 2
+ - node1 Received Message with id = 4 and Content = $It is the smallest and thus highest-pitched instrument$ at 5.40 without Modification Ack number 2
+ - node0 Sends Message with id = 5 and Content = $(soprano) in the family in regular use.$ at 5.60 Ack number 3
+ - node1 Received Message with id = 5 and Content = $(soprano) in the family in regular use.$ at 5.60 without Modification Ack number 3
+ - node0 Sends Message with id = 6 and Content = $[a] The violin typically has four strings,$ at 5.80 Ack number 4
+ - node1 Received Message with id = 6 and Content = $[a] The violin typically has four strings,$ at 5.80 without Modification Ack number 4
+ - node0 Sends Message with id = 7 and Content = $(some can have five/$), usually tuned in perfect$ at 6.00 Ack number 5
+ - node1 Received Message with id = 7 and Content = $(some can have five/$), usually tuned in perfect$ at 6.00 without Modification Ack number 5
+ - node0 Sends Message with id = 8 and Content = $fifths with notes G3, D4, A4, E5,$ at 6.20 Ack number 6
+ - node1 Received Message with id = 8 and Content = $fifths with notes G3, D4, A4, E5,$ at 6.20 without Modification Ack number 6
+ - node0 drops Message with id = 9 at 6.40
+ - node0 Sends Message with id = 10 and Content = $a bow across its strings.$ at 7.40 Ack number 7
+ - node1 Received Message with id = 10 and Content = $a bow across its strings.$ at 7.40 without Modification Ack number 7
+ - node0 Sends Message with id = 11 and Content = $It can also be played by plucking$ at 7.60 Ack number 8
+ - node1 Received Message with id = 11 and Content = $It can also be played by plucking$ at 7.60 without Modification Ack number 8
+ - node0 Sends Message with id = 12 and Content = $the strings/$ with the vingers (pizzicato)$ at 7.80 with Modification Delayed with time = 0.200000 Ack number 9
+ - node1 Received Message with id = 12 and Content = $the strings/$ with the vingers (pizzicato)$ at 8.00 with Modification Ack number 9
+ - node0 Sends Message with id = 13 and Content = $and, in specialized cases, by striking$ at 8.20 Ack number 10
+ - node1 Received Message with id = 13 and Content = $and, in specialized cases, by striking$ at 8.20 without Modification Ack number 10
+ - node0 Sends Message with id = 14 and Content = $the strings with the wooden side/$ of the bow$ at 8.40 Ack number 11
+ - node1 Received Message with id = 14 and Content = $the strings with the wooden side/$ of the bow$ at 8.40 without Modification Ack number 11
+ - node0 Sends Message with id = 14 and Content = $the strings with the wooden side/$ of the bow$ at 8.41 with Modification Ack number 11
+ - node1 Received Message with id = 14 and Content = $the strings with the wooden side/$ of the bow$ at 8.41 and It is duplicated, so it will be discard Ack number 11
+ - node0 Sends Message with id = 15 and Content = $(col legno).$ at 8.60 Ack number 12
+ - node1 Received Message with id = 15 and Content = $(col legno).$ at 8.60 without Modification Ack number 12
+ ------------------------------------------------------------- 
+ - node0 end of input file 
+ - Total Transmission time : 8.80
+ - correct : 12
+ - duplicate : 3
+ - losses : 3
+ - incorrect : 1
+ - Total number of Transmission : 19
+ - Throughput : 1.36

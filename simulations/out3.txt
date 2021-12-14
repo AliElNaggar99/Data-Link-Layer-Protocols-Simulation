@@ -1,0 +1,21 @@
+ - node0 Sends Message with id = 0 and Content = $A cherry blossom is a flower of many trees of genus/$ Prunus or Prunus subg.$ at 3.00 Delayed with time = 0.200000 Ack number 0
+ - node1 Received Message with id = 0 and Content = $A cherry blossom is a flower of many trees of genus/$ Prunus or Prunus subg.$ at 3.20 without Modification Ack number 0
+ - node0 Sends Message with id = 1 and Content = $They are also known as Japanese cherry and Sakura$ at 3.60, started 0.2 later due to delay Ack number 1
+ - node1 Received Message with id = 1 and Content = $They are also known as Japanese cherry and Sakura$ at 3.60 without Modification Ack number 1
+ - node0 Sends Message with id = 1 and Content = $They are also known as Japanese cherry and Sakura$ at 3.61 with Modification Ack number 1
+ - node1 Received Message with id = 1 and Content = $They are also known as Japanese cherry and Sakura$ at 3.61 and It is duplicated, so it will be discard Ack number 1
+ - node0 Sends Message with id = 2 and Content = $They generally refer to /$ ornamental cherry trees,$ at 3.80 Ack number 2
+ - node1 Received Message with id = 2 and Content = $They generally refer to /$ ornamental cherry trees,$ at 3.80 without Modification Ack number 2
+ - node0 Sends Message with id = 3 and Content = $not to be confused with cherry trees that// produce fruit for eating.$ at 4.00 Ack number 3
+ - node1 Received Message with id = 3 and Content = $not to be confused with cherry trees that// produce fruit for eating.$ at 4.00 without Modification Ack number 3
+ - node0 Sends Message with id = 4 and Content = $It is considered// the natyonal flower of Japan.$ at 4.20 with Modification Ack number 4
+ - node1 Received Message with id = 4 and Content = $It is considered// the natyonal flower of Japan.$ at 4.20 with Modification Ack number 4
+ ------------------------------------------------------------- 
+ - node0 end of input file 
+ - Total Transmission time : 4.40
+ - correct : 4
+ - duplicate : 1
+ - losses : 0
+ - incorrect : 1
+ - Total number of Transmission : 6
+ - Throughput : 0.91

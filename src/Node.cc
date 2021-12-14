@@ -18,21 +18,16 @@
 #include <fstream>
 #include <string>
 #include "utilities.h"
-
+#include <iomanip>
 Define_Module(Node);
-
-
-std::ofstream MyFile ("pair01.txt");
-
-void Node::initialize()
-{
-    // TODO - Generated method body
-
-}
+std::ofstream MyFile("out5.txt");
 
 void Node::handleMessage(cMessage *msg)
 {
+
+    MyFile << std::fixed << std::setprecision(2);
     //MyFile.open("pair01.txt");
+
     //this will initial if it is not Initialized
     if (!isInitialized)
     {
@@ -45,13 +40,15 @@ void Node::handleMessage(cMessage *msg)
     if(MsgRecived->getM_Type() == Self_Message)
     {
         //Start sending
-        //cancelAndDelete(msg);
+        // must cancel and delete since you send yourself a message
+        cancelAndDelete(msg);
         SendMsg();
     }
-    //Ana Receiver
     else if(MsgRecived->getM_Type() == DATA)
     {
-        //Check on SeqNum that I should recievce
+        // Receiver Code
+        std::cout << "Received Message with id = "<< to_string(MsgRecived->getMessageId()) <<std::endl;
+        //Check on SeqNum that I should receive.
         if(MsgRecived->getSeq_Num() == CurrentSeqNum)
         {
             ReceiveData(msg,MsgRecived);
@@ -60,38 +57,64 @@ void Node::handleMessage(cMessage *msg)
         //If not same SeqNum, it means this message is duplicated and should be discard and log what happend
         else
         {
-          ///Logs
-            MyFile<<" - "<<getName()<<" Received Message with id = "<< to_string(MsgRecived->getMessageId()) <<" and Content = "<<MsgRecived->getM_Payload()<<" at "<<to_string((int)simTime().dbl())<<" and It is duplicated, so it will be discard"<<endl;
-            //MyFile.close();
+            MyFile  <<" - "<<getName()<<" Received Message with id = "<< to_string(MsgRecived->getMessageId()) <<" and Content = "<<MsgRecived->getM_Payload()<<" at "<<(double)simTime().dbl()<<" and It is duplicated, so it will be discard"
+                    << " Ack number " << std::to_string(MsgRecived->getSeq_Num()) <<endl;
             cancelAndDelete(msg);
             MyMessage_Base* ACKMsg = new MyMessage_Base();
-            ACKMsg->setSeq_Num(CurrentSeqNum);
+            std::cout << "CurrentSeqNum on dup" << CurrentSeqNum << std::endl;
+            ACKMsg->setSeq_Num(CurrentSeqNum-1);
             ACKMsg->setM_Type(ACK);
-            sendDelayed((cMessage *)ACKMsg, getParentModule()->par("delay").intValue(), "out");
+            sendDelayed((cMessage *)ACKMsg, getParentModule()->par("delay").doubleValue(), "out");
         }
     }
     else if(MsgRecived->getM_Type() == ACK || MsgRecived->getM_Type() == NACK)
     {
-        //Ack Rececived
-        //Get new msg and send
-        if(CurrentMsg == 1+MsgRecived->getSeq_Num())
+        // Ack Rececived
+        // Get new msg and send
+        // Mean duplicate (since we increment seq number only if we recieve ack)
+        // so we recieve first ack become 1 for ex , and its still 1 when we recieve next duplicate ack)
+        if(CurrentMsg - 1 == MsgRecived->getSeq_Num() )
         {
+            duplicate++ ;
+            EV<< "recieved same ack so will discard" << std::endl ;
             cancelAndDelete(msg);
             return;
         }
+
+        if(MsgRecived->getM_Type() == ACK) correct++ ;
+        else incorrect++;
+
+        // incrementing currentMsg for sync , currentMsgIndex , msgId
         CurrentMsg++;
-        //cancelAndDelete(msg);
-        if(CurrentMsg == MessageQueue.size())
-        {
-            ///////End Simulation
-            std::cout<<"Finished"<<std::endl;
-            return;
-        }
+        CurrentMsgIndex++ ;
+        MsgId++ ;
         SendMsg();
     }
-    // TODO - Generated method body
+    // timeOut case occurred
+    else if(MsgRecived->getM_Type() == TimeOut){
 
+        // handling the case of timeOut where loss occurred
+        if(MsgRecived->getSeq_Num() == CurrentMsg){
+            std::cout << "entered timeout" << std::endl;
+            losses++ ;
+            // handling loss case since we wont be sending it again so will increment index inside vector messages only
+            CurrentMsgIndex++ ; // incrementing index only to send next message but with same id
+            MsgId++ ;
+            SendMsg();
+        }
+        cancelAndDelete(msg);
 
+    // duplicate case occurred
+    }else if(MsgRecived->getM_Type() == Duplicate){
+            MsgRecived->setM_Type(DATA);
+            send((cMessage *)MsgRecived, "out");
+            string isModified = "";
+            if(MsgRecived->getIsModified() == true)
+                isModified = " with Modification";
+
+            MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(MsgRecived->getMessageId()) <<" and Content = "<<MsgRecived->getM_Payload()<<" at "<<((double)simTime().dbl()) << isModified
+                    << " Ack number " << std::to_string(MsgRecived->getSeq_Num()) <<endl;
+    }
 }
 
 void Node::ReceiveData(cMessage *msg,MyMessage_Base* MsgRecived)
@@ -99,42 +122,62 @@ void Node::ReceiveData(cMessage *msg,MyMessage_Base* MsgRecived)
     std::string MsgPayLoad = MsgRecived->getM_Payload();
     int reminder = computeCrcAtReciever(MsgPayLoad,MsgRecived->getTrailer());
     std::string MsgPayLoadDeframe = DeFrame(MsgPayLoad);
-    //cancelAndDelete(msg);
     if(reminder == 0)
     {
         //No error Happened log and Send ACK
-        MyFile<<" - "<<getName()<<" Received Message with id = "<< to_string(MsgRecived->getMessageId()) <<" and Content = "<<MsgRecived->getM_Payload()<<" at "<<to_string((int)simTime().dbl())<<" without Modification"<<endl;
-        //MyFile.close();
+        MyFile<<" - "<<getName()<<" Received Message with id = "<< to_string(MsgRecived->getMessageId()) <<" and Content = "<<MsgRecived->getM_Payload()<<" at "<<((double)simTime().dbl())<<" without Modification"
+                << " Ack number " << std::to_string(MsgRecived->getSeq_Num()) <<endl;
         MyMessage_Base* ACKMsg = new MyMessage_Base();
         ACKMsg->setM_Type(ACK);
-        sendDelayed((cMessage *)ACKMsg, getParentModule()->par("delay").intValue(), "out");
+        ACKMsg->setSeq_Num(CurrentSeqNum);
+        sendDelayed((cMessage *)ACKMsg, getParentModule()->par("delay").doubleValue(), "out");
     }
     else
     {
-        //Error Happpened log and Send NACK
-        //No error Happened log and Send ACK
-        MyFile<<" - "<<getName()<<" Received Message with id = "<< to_string(MsgRecived->getMessageId()) <<" and Content = "<<MsgRecived->getM_Payload()<<" at "<<to_string((int)simTime().dbl())<<" with Modification"<<endl;
-       // MyFile.close();
+        //Error happened log and Send NACK
+        MyFile<<" - "<<getName()<<" Received Message with id = "<< to_string(MsgRecived->getMessageId()) <<" and Content = "<<MsgRecived->getM_Payload()<<" at "<<((double)simTime().dbl())<<" with Modification"
+                << " Ack number " << std::to_string(MsgRecived->getSeq_Num()) <<endl;
+
         MyMessage_Base* ACKMsg = new MyMessage_Base();
         ACKMsg->setM_Type(NACK);
-        sendDelayed((cMessage *)ACKMsg, getParentModule()->par("delay").intValue(), "out");
+        ACKMsg->setSeq_Num(CurrentSeqNum);
+        sendDelayed((cMessage *)ACKMsg, getParentModule()->par("delay").doubleValue(), "out");
     }
 }
 
 void Node::SendMsg()
 {
+
       //assume i have it
+      if(CurrentMsgIndex == MessageQueue.size())
+      {
+        ///////End Simulation
+         MyFile << " ------------------------------------------------------------- " << endl ;
+         MyFile << " - " << getName() << " end of input file " << endl ;
+         MyFile << " - " << "Total Transmission time : " << ((double)simTime().dbl()) << std::endl ;
+         MyFile << " - " << "correct : " << correct << std::endl ;
+         MyFile << " - " << "duplicate : " << duplicate << std::endl ;
+         MyFile << " - " << "losses : " << losses << std::endl ;
+         MyFile << " - " << "incorrect : " << incorrect << std::endl ;
+
+        MyFile << " - " << "Total number of Transmission : " << correct + duplicate + losses + incorrect << std::endl ;
+        MyFile << " - " << "Throughput : " <<  (double)correct /  ((double)simTime().dbl()) << std::endl;
+
+        std::cout<<"Finished"<<std::endl;
+        MyFile.close();
+        return;
+      }
       MyMessage_Base* myMsg = new MyMessage_Base();
-      std::string modtype = MessageQueueEffect[CurrentMsg];
-      std::string MessageAfterFraming = Frame(MessageQueue[CurrentMsg]);
+      std::string modtype = MessageQueueEffect[CurrentMsgIndex];
+      std::string MessageAfterFraming = Frame(MessageQueue[CurrentMsgIndex]);
       char CRC = computeCrcAtSender(MessageAfterFraming);
       myMsg->setM_Type(DATA);
       myMsg->setM_Payload(MessageAfterFraming.c_str());
       myMsg->setTrailer(CRC);
-      myMsg->setSendingTime((int)simTime().dbl());
+      myMsg->setSendingTime((double)simTime().dbl());
       //Seq_Num will increase in ACK only
       myMsg->setSeq_Num(CurrentMsg);
-      myMsg->setMessageId(CurrentMsg);
+      myMsg->setMessageId(MsgId);
       ModifyMessage(modtype, myMsg);
 }
 
@@ -170,6 +213,7 @@ std::string Node::DeFrame(std::string Msg)
 
 void Node::ModifyMessage(std::string modificationType, MyMessage_Base *msg)
 {
+
     if (modificationType[0] == '1')
     {
         /*Modification: This is done to any randomly selected single bit on the payload
@@ -207,7 +251,8 @@ void Node::ModifyMessage(std::string modificationType, MyMessage_Base *msg)
         if(modificationType[1] == '0' && modificationType[2] == '0' && modificationType[3] == '0')
         {
             send((cMessage *)msg, "out");
-            MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<to_string((int)simTime().dbl())<<" with Modification"<<endl;
+            MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<((double)simTime().dbl())<<" with Modification"
+                    << " Ack number " << std::to_string(CurrentMsg) <<endl;
            // MyFile.close();
         }
 
@@ -215,58 +260,79 @@ void Node::ModifyMessage(std::string modificationType, MyMessage_Base *msg)
 
     if (modificationType[1] == '1')
     {
-            /*Loss: the whole message should not be sent using the send function,
-             but it should be included in the log file and the system calculations*/
-
-            // 1) No send but must write in log file
-
-        //TimeOut After
-        MyFile<<" - "<<getName()<<" drops Message with id = "<< to_string(msg->getMessageId()) <<" at "<<to_string((int)simTime().dbl())<<endl;
-        //MyFile.close();
-        MyMessage_Base *myMsg = new MyMessage_Base();
-        myMsg->setM_Type(ACK);
-        scheduleAt(simTime() + 2, (cMessage*)myMsg);
-
+        /*Loss: the whole message should not be sent using the send function,
+        but it should be included in the log file and the system calculations*/
+        MyFile<<" - "<<getName()<<" drops Message with id = "<< to_string(msg->getMessageId()) <<" at "<<((double)simTime().dbl())<<endl;
     }
-
-    if (modificationType[2] == '1')
-    {
-        /* Duplicated: the whole message should be sent
-         twice with a small difference in time (0.01s)*/
-         std::string isModified ="";
-         if(modificationType[0] == '1')
-             isModified = " with Modification";
-        // 1) send the first message
-        send((cMessage *)msg, "out");
-        MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<to_string((int)simTime().dbl())<<isModified<<endl;
-        // 2) send the second message with the same message after 0.01 second
-        MyMessage_Base* NewMsg = new MyMessage_Base(*msg);
-        sendDelayed((cMessage *)NewMsg, 0.01, "out");
-        MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<to_string((int)simTime().dbl()+0.01)<<isModified<<endl;
-        //MyFile.close();
-    }
-
+    bool delayed = 0;
     if (modificationType[3] == '1')
     {
-        /* Delay: the whole message should be delayed 
+        /* Delay: the whole message should be delayed
         using the delay value from the .ini file. [dont use busy waiting].*/
 
         // 1)get delay time from omnetpp.ini
         std::string isModified ="";
         if(modificationType[0] == '1')
                isModified = " with Modification";
-        MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<to_string((int)simTime().dbl())<<isModified<<"Delayed with time = "<<to_string(getParentModule()->par("delay").intValue())<<endl;
-        sendDelayed((cMessage *)msg, getParentModule()->par("delay").intValue(), "out");
-        //MyFile.close();
+
+
+        if(modificationType[2] == '0'){
+            MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<((double)simTime().dbl())<<isModified<<" Delayed with time = "<<to_string(getParentModule()->par("delay").doubleValue())
+                    << " Ack number " << std::to_string(CurrentMsg) <<endl;
+
+            sendDelayed((cMessage *)msg, getParentModule()->par("delay").doubleValue(), "out");
+        }
+        else{
+            delayed = 1;
+        }
     }
+
+    if (modificationType[2] == '1')
+    {
+        /* Duplicated: the whole message should be sent
+         twice with a small difference in time (0.01s)*/
+         string delayString = "";
+         double delayValue = 0 ;
+         if(delayed == 1){
+             delayString = ", started 0.2 later due to delay" ;
+             delayValue = getParentModule()->par("delay").doubleValue();
+         }
+         std::string isModified ="";
+         if(modificationType[0] == '1')
+             isModified = " with Modification";
+         // 1) send the first message
+         if(modificationType[1] != '1'){
+            sendDelayed((cMessage *)msg , delayValue, "out");
+            MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<((double)simTime().dbl() + delayValue)<<isModified << delayString
+                    << " Ack number " << std::to_string(CurrentMsg) <<endl;
+            MyMessage_Base* NewMsg = new MyMessage_Base(*msg);
+            NewMsg->setM_Type(Duplicate);
+            NewMsg->setIsModified(true);
+            // 2) send the second message with the same message after 0.01 second
+            scheduleAt(simTime() + 0.01 + delayValue, (cMessage*)NewMsg);
+        }else
+            duplicate++;
+
+    }
+
+
 
     if(modificationType[0] == '0' && modificationType[1] == '0' && modificationType[2] == '0' && modificationType[3] == '0')
     {
         send((cMessage *)msg, "out");
-        MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<to_string((int)simTime().dbl())<<endl;
+        MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<((double)simTime().dbl())
+        << " Ack number " << std::to_string(CurrentMsg) <<endl;
         //MyFile.close();
     }
 
+    Timer();
+}
+
+void Node::Timer(){
+    MyMessage_Base *myMsg = new MyMessage_Base();
+    myMsg->setM_Type(TimeOut);
+    myMsg->setSeq_Num(CurrentMsg);
+    scheduleAt(simTime() + 1, (cMessage*)myMsg);
 }
 
 void Node::Initial(cMessage *msg)
@@ -304,7 +370,7 @@ void Node::Initial(cMessage *msg)
 
 void Node::ReadFromFile(std::string FileName)
 {
-    std::string location = "D:/Downloads/Compressed/omnetpp-5.7-windows-x86_64/omnetpp-5.7/samples/Data-Link-Layer-Protocols-Simulation/inputs_samples/" + FileName;
+    std::string location = "E:\\5th Semester CCE\\Computer Networks\\Project\\Project Code\\Data-Link-Layer-Protocols-Simulation\\inputs_samples\\" + FileName;
     std::ifstream file(location);
     std::string str;
     while (std::getline(file, str))
@@ -313,4 +379,11 @@ void Node::ReadFromFile(std::string FileName)
         MessageQueueEffect.push_back(str.substr(0, 4));
         MessageQueue.push_back(str.substr(5));
     }
+}
+
+
+void Node::initialize()
+{
+    // TODO - Generated method body
+
 }

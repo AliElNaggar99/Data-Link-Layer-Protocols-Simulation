@@ -1,0 +1,36 @@
+ - node0 Sends Message with id = 0 and Content = $An electric car is an qutomobile that is$ at 3.00 with Modification Ack number 0
+ - node1 Received Message with id = 0 and Content = $An electric car is an qutomobile that is$ at 3.00 with Modification Ack number 0
+ - node0 Sends Message with id = 1 and Content = $propelled by one or more electric motors,$ at 3.20 Ack number 1
+ - node1 Received Message with id = 1 and Content = $propelled by one or more electric motors,$ at 3.20 without Modification Ack number 1
+ - node0 Sends Message with id = 2 and Content = $using energy stored in batteries.$ at 3.40 Ack number 2
+ - node1 Received Message with id = 2 and Content = $using energy stored in batteries.$ at 3.40 without Modification Ack number 2
+ - node0 Sends Message with id = 3 and Content = $Compared to internal combustion engine (ICE) vehicles,$ at 3.60 Ack number 3
+ - node1 Received Message with id = 3 and Content = $Compared to internal combustion engine (ICE) vehicles,$ at 3.60 without Modification Ack number 3
+ - node0 Sends Message with id = 3 and Content = $Compared to internal combustion engine (ICE) vehicles,$ at 3.61 with Modification Ack number 3
+ - node1 Received Message with id = 3 and Content = $Compared to internal combustion engine (ICE) vehicles,$ at 3.61 and It is duplicated, so it will be discard Ack number 3
+ - node0 Sends Message with id = 4 and Content = $electric cars are quieter,$ at 4.00, started 0.2 later due to delay Ack number 4
+ - node1 Received Message with id = 4 and Content = $electric cars are quieter,$ at 4.00 without Modification Ack number 4
+ - node0 Sends Message with id = 4 and Content = $electric cars are quieter,$ at 4.01 with Modification Ack number 4
+ - node1 Received Message with id = 4 and Content = $electric cars are quieter,$ at 4.01 and It is duplicated, so it will be discard Ack number 4
+ - node0 Sends Message with id = 5 and Content = $have no exhaust emissions, and lower emissions overall.$ at 4.20 Ack number 5
+ - node1 Received Message with id = 5 and Content = $have no exhaust emissions, and lower emissions overall.$ at 4.20 without Modification Ack number 5
+ - node0 Sends Message with id = 6 and Content = $In the United States and the European Union,$ at 4.40 Ack number 6
+ - node1 Received Message with id = 6 and Content = $In the United States and the European Union,$ at 4.40 without Modification Ack number 6
+ - node0 Sends Message with id = 7 and Content = $as of 2020, the total cost of ownership of recen4 electric vehicles$ at 4.60 with Modification Ack number 7
+ - node1 Received Message with id = 7 and Content = $as of 2020, the total cost of ownership of recen4 electric vehicles$ at 4.60 with Modification Ack number 7
+ - node0 Sends Message with id = 8 and Content = $is cheaper/$ than that of equivalent ICE cars,$ at 4.80 Ack number 8
+ - node1 Received Message with id = 8 and Content = $is cheaper/$ than that of equivalent ICE cars,$ at 4.80 without Modification Ack number 8
+ - node0 Sends Message with id = 9 and Content = $due to lower fueling and maintenance costs/$/$.$ at 5.00 Ack number 9
+ - node1 Received Message with id = 9 and Content = $due to lower fueling and maintenance costs/$/$.$ at 5.00 without Modification Ack number 9
+ - node0 Sends Message with id = 10 and Content = $Charging an electric car can be done at a variety of charging stations;$ at 5.20 Ack number 10
+ - node1 Received Message with id = 10 and Content = $Charging an electric car can be done at a variety of charging stations;$ at 5.20 without Modification Ack number 10
+ - node0 drops Message with id = 11 at 5.40
+ ------------------------------------------------------------- 
+ - node0 end of input file 
+ - Total Transmission time : 6.40
+ - correct : 9
+ - duplicate : 2
+ - losses : 1
+ - incorrect : 2
+ - Total number of Transmission : 14
+ - Throughput : 1.41

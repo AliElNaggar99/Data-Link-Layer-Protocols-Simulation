@@ -1,15 +1,27 @@
- - node0 Sends Message with id = 0 and Content = $A flower, sometimes known0as a bloom or blossom$ at 3 with Modification
- - node0 Sends Message with id = 0 and Content = $A flower, sometimes known0as a bloom or blossom$ at 3.010000 with Modification
- - node1 Received Message with id = 0 and Content = $A flower, sometimes known0as a bloom or blossom$ at 3 with Modification
- - node1 Received Message with id = 0 and Content = $A flower, sometimes known0as a bloom or blossom$ at 3 and It is duplicated, so it will be discard
- - node0 Sends Message with id = 1 and Content = $is the reproductive/$ structure found in flowering plants$ at 5
- - node1 Received Message with id = 1 and Content = $is the reproductive/$ structure found in flowering plants$ at 5 without Modification
- - node0 drops Message with id = 2 at 5
- - node0 Sends Message with id = 3 and Content = $The biological function of a flower is to facilitate reproduction,$ at 7
- - node1 Received Message with id = 3 and Content = $The biological function of a flower is to facilitate reproduction,$ at 7 and It is duplicated, so it will be discard
- - node0 Sends Message with id = 4 and Content = $usually by providing a mechanism for the union of sperm with eggs.$ at 7Delayed with time = 2
- - node0 Sends Message with id = 5 and Content = $Flowers may facilitate outcrossing/$$ at 9
- - node1 Received Message with id = 5 and Content = $Flowers may facilitate outcrossing/$$ at 9 and It is duplicated, so it will be discard
- - node1 Received Message with id = 4 and Content = $usually by providing a mechanism for the union of sperm with eggs.$ at 9 and It is duplicated, so it will be discard
- - node0 Sends Message with id = 6 and Content = $(fusion of sperm and eggs from different individuals in a population)$ at 11
- - node1 Received Message with id = 6 and Content = $(fusion of sperm and eggs from different individuals in a population)$ at 11 and It is duplicated, so it will be discard
+ - node0 Sends Message with id = 0 and Content = $Sherlock Holmes is a fictional detective$ at 3.00 Ack number 0
+ - node1 Received Message with id = 0 and Content = $Sherlock Holmes is a fictional detective$ at 3.00 without Modification Ack number 0
+ - node0 Sends Message with id = 1 and Content = $created by British author/$ Sir Arthur Conan Doyle.$ at 3.20 Ack number 1
+ - node1 Received Message with id = 1 and Content = $created by British author/$ Sir Arthur Conan Doyle.$ at 3.20 without Modification Ack number 1
+ - node0 Sends Message with id = 1 and Content = $created by British author/$ Sir Arthur Conan Doyle.$ at 3.21 with Modification Ack number 1
+ - node1 Received Message with id = 1 and Content = $created by British author/$ Sir Arthur Conan Doyle.$ at 3.21 and It is duplicated, so it will be discard Ack number 1
+ - node0 drops Message with id = 2 at 3.40
+ - node0 Sends Message with id = 3 and Content = $Holmes is known for his proficiency with observation,$ at 4.40 Ack number 2
+ - node1 Received Message with id = 3 and Content = $Holmes is known for his proficiency with observation,$ at 4.40 without Modification Ack number 2
+ - node0 Sends Message with id = 4 and Content = $deduction, forensic science,$ at 4.60 Ack number 3
+ - node1 Received Message with id = 4 and Content = $deduction, forensic science,$ at 4.60 without Modification Ack number 3
+ - node0 Sends Message with id = 5 and Content = $and// logical reasoning/$ that borders on the fantastic,$ at 4.80 Ack number 4
+ - node1 Received Message with id = 5 and Content = $and// logical reasoning/$ that borders on the fantastic,$ at 4.80 without Modification Ack number 4
+ - node0 drops Message with id = 6 at 5.00
+ - node0 Sends Message with id = 6 and Content = $which he employs when investigating cases for a wide variety of clients,$ at 5.00 Delayed with time = 0.200000 Ack number 5
+ - node1 Received Message with id = 6 and Content = $which he employs when investigating cases for a wide variety of clients,$ at 5.20 without Modification Ack number 5
+ - node0 Sends Message with id = 7 and Content = $including Scotland Yard.$ at 5.40 Ack number 6
+ - node1 Received Message with id = 7 and Content = $including Scotland Yard.$ at 5.40 without Modification Ack number 6
+ ------------------------------------------------------------- 
+ - node0 end of input file 
+ - Total Transimission time : 5.60
+ - correct : 7
+ - duplicate : 1
+ - losses : 1
+ - incorrect : 0
+ - Total number of Transimission : 9
+ - Throughput : 1.25

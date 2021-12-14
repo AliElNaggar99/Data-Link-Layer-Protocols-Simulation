@@ -66,12 +66,12 @@ class MyMessage_Base : public ::omnetpp::cPacket
 {
   protected:
     int messageId;
-    int sendingTime;
-   std::string M_Payload;
+    double sendingTime;
+    std::string M_Payload;
     char Trailer;
     int Seq_Num;
     M_Type M_Type_Value;
-
+    bool isModified ;
     bits mycheckbits;
 
   private:
@@ -109,12 +109,15 @@ class MyMessage_Base : public ::omnetpp::cPacket
     virtual void setMessageId(int MessageId){(this)->messageId = MessageId;}
 
 
-    virtual int getSendingTime() const {return (this)->sendingTime;}
-    virtual void setSendingTime(int Time){(this)->sendingTime = Time;}
+    virtual double getSendingTime() const {return (this)->sendingTime;}
+    virtual void setSendingTime(double Time){(this)->sendingTime = Time;}
 
 
     virtual char getTrailer() const {return (this)->Trailer;}
     virtual void setTrailer(char CRC){(this)->Trailer = CRC;}
+
+    virtual bool getIsModified() const {return (this)->isModified;}
+    virtual void setIsModified(bool isModified_input){(this)->isModified = isModified_input;}
 };
 
 

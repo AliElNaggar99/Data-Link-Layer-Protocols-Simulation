@@ -1,0 +1,27 @@
+ - node0 Sends Message with id = 0 and Content = $Sherlock Holmes is a fictional detective$ at 3.00 Ack number 0
+ - node1 Received Message with id = 0 and Content = $Sherlock Holmes is a fictional detective$ at 3.00 without Modification Ack number 0
+ - node0 Sends Message with id = 1 and Content = $created by British author/$ Sir Arthur Conan Doyle.$ at 3.20 Ack number 1
+ - node1 Received Message with id = 1 and Content = $created by British author/$ Sir Arthur Conan Doyle.$ at 3.20 without Modification Ack number 1
+ - node0 Sends Message with id = 1 and Content = $created by British author/$ Sir Arthur Conan Doyle.$ at 3.21 with Modification Ack number 1
+ - node1 Received Message with id = 1 and Content = $created by British author/$ Sir Arthur Conan Doyle.$ at 3.21 and It is duplicated, so it will be discard Ack number 1
+ - node0 drops Message with id = 2 at 3.40
+ - node0 Sends Message with id = 3 and Content = $Holmes is known for his proficiency with observation,$ at 4.40 Ack number 2
+ - node1 Received Message with id = 3 and Content = $Holmes is known for his proficiency with observation,$ at 4.40 without Modification Ack number 2
+ - node0 Sends Message with id = 4 and Content = $deduction, forensic science,$ at 4.60 Ack number 3
+ - node1 Received Message with id = 4 and Content = $deduction, forensic science,$ at 4.60 without Modification Ack number 3
+ - node0 Sends Message with id = 5 and Content = $and// logical reasoning/$ that borders on the fantastic,$ at 4.80 Ack number 4
+ - node1 Received Message with id = 5 and Content = $and// logical reasoning/$ that borders on the fantastic,$ at 4.80 without Modification Ack number 4
+ - node0 drops Message with id = 6 at 5.00
+ - node0 Sends Message with id = 6 and Content = $which he employs when investigating cases for a wide variety of clients,$ at 5.00 Delayed with time = 0.200000 Ack number 5
+ - node1 Received Message with id = 6 and Content = $which he employs when investigating cases for a wide variety of clients,$ at 5.20 without Modification Ack number 5
+ - node0 Sends Message with id = 7 and Content = $including Scotland Yard.$ at 5.40 Ack number 6
+ - node1 Received Message with id = 7 and Content = $including Scotland Yard.$ at 5.40 without Modification Ack number 6
+ ------------------------------------------------------------- 
+ - node0 end of input file 
+ - Total Transmission time : 5.60
+ - correct : 7
+ - duplicate : 1
+ - losses : 1
+ - incorrect : 0
+ - Total number of Transmission : 9
+ - Throughput : 1.25
