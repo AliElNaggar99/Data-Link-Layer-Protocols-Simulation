@@ -1,12 +1,12 @@
- - node0 Sends Message with id = 0 and Content = $/$An aurora, also known as the polar lights/$ or aurora polaris,$ at 3.00 Ack number 0
+ - node0 Sends Message with id = 0 and Content = $/$An aurora, also known as the polar lights/$ or aurora polaris,$ at 3.00 without Modification Ack number 0
  - node1 Received Message with id = 0 and Content = $/$An aurora, also known as the polar lights/$ or aurora polaris,$ at 3.00 without Modification Ack number 0
- - node0 Sends Message with id = 0 and Content = $/$An aurora, also known as the polar lights/$ or aurora polaris,$ at 3.01 with Modification Ack number 0
+ - node0 Sends Message with id = 0 and Content = $/$An aurora, also known as the polar lights/$ or aurora polaris,$ at 3.01 without Modification Ack number 0
  - node1 Received Message with id = 0 and Content = $/$An aurora, also known as the polar lights/$ or aurora polaris,$ at 3.01 and It is duplicated, so it will be discard Ack number 0
  - node0 Sends Message with id = 1 and Content = $is a natural light display in Earth's sky,$ at 3.20 Ack number 1
  - node1 Received Message with id = 1 and Content = $is a natural light display in Earth's sky,$ at 3.20 without Modification Ack number 1
- - node0 Sends Message with id = 2 and Content = $predominantly seen in high-latitude regions$ at 3.40 Ack number 2
+ - node0 Sends Message with id = 2 and Content = $predominantly seen in high-latitude regions$ at 3.40 without Modification Ack number 2
  - node1 Received Message with id = 2 and Content = $predominantly seen in high-latitude regions$ at 3.40 without Modification Ack number 2
- - node0 Sends Message with id = 2 and Content = $predominantly seen in high-latitude regions$ at 3.41 with Modification Ack number 2
+ - node0 Sends Message with id = 2 and Content = $predominantly seen in high-latitude regions$ at 3.41 without Modification Ack number 2
  - node1 Received Message with id = 2 and Content = $predominantly seen in high-latitude regions$ at 3.41 and It is duplicated, so it will be discard Ack number 2
  - node0 Sends Message with id = 3 and Content = $(around the Arctic/? and Antarctic).$ at 3.60 with Modification Ack number 3
  - node1 Received Message with id = 3 and Content = $(around the Arctic/? and Antarctic).$ at 3.60 with Modification Ack number 3

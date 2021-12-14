@@ -1,8 +1,8 @@
- - node0 Sends Message with id = 0 and Content = $A cherry blossom is a flower of many trees of genus/$ Prunus or Prunus subg.$ at 3.00 Delayed with time = 0.200000 Ack number 0
+ - node0 Sends Message with id = 0 and Content = $A cherry blossom is a flower of many trees of genus/$ Prunus or Prunus subg.$ at 3.00 Delayed with time = 0.20 Ack number 0
  - node1 Received Message with id = 0 and Content = $A cherry blossom is a flower of many trees of genus/$ Prunus or Prunus subg.$ at 3.20 without Modification Ack number 0
- - node0 Sends Message with id = 1 and Content = $They are also known as Japanese cherry and Sakura$ at 3.60, started 0.2 later due to delay Ack number 1
+ - node0 Sends Message with id = 1 and Content = $They are also known as Japanese cherry and Sakura$ at 3.60 without Modification, started 0.2 later due to delay Ack number 1
  - node1 Received Message with id = 1 and Content = $They are also known as Japanese cherry and Sakura$ at 3.60 without Modification Ack number 1
- - node0 Sends Message with id = 1 and Content = $They are also known as Japanese cherry and Sakura$ at 3.61 with Modification Ack number 1
+ - node0 Sends Message with id = 1 and Content = $They are also known as Japanese cherry and Sakura$ at 3.61 without Modification Ack number 1
  - node1 Received Message with id = 1 and Content = $They are also known as Japanese cherry and Sakura$ at 3.61 and It is duplicated, so it will be discard Ack number 1
  - node0 Sends Message with id = 2 and Content = $They generally refer to /$ ornamental cherry trees,$ at 3.80 Ack number 2
  - node1 Received Message with id = 2 and Content = $They generally refer to /$ ornamental cherry trees,$ at 3.80 without Modification Ack number 2

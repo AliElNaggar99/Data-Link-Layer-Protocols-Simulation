@@ -4,13 +4,13 @@
  - node1 Received Message with id = 1 and Content = $propelled by one or more electric motors,$ at 3.20 without Modification Ack number 1
  - node0 Sends Message with id = 2 and Content = $using energy stored in batteries.$ at 3.40 Ack number 2
  - node1 Received Message with id = 2 and Content = $using energy stored in batteries.$ at 3.40 without Modification Ack number 2
- - node0 Sends Message with id = 3 and Content = $Compared to internal combustion engine (ICE) vehicles,$ at 3.60 Ack number 3
+ - node0 Sends Message with id = 3 and Content = $Compared to internal combustion engine (ICE) vehicles,$ at 3.60 without Modification Ack number 3
  - node1 Received Message with id = 3 and Content = $Compared to internal combustion engine (ICE) vehicles,$ at 3.60 without Modification Ack number 3
- - node0 Sends Message with id = 3 and Content = $Compared to internal combustion engine (ICE) vehicles,$ at 3.61 with Modification Ack number 3
+ - node0 Sends Message with id = 3 and Content = $Compared to internal combustion engine (ICE) vehicles,$ at 3.61 without Modification Ack number 3
  - node1 Received Message with id = 3 and Content = $Compared to internal combustion engine (ICE) vehicles,$ at 3.61 and It is duplicated, so it will be discard Ack number 3
- - node0 Sends Message with id = 4 and Content = $electric cars are quieter,$ at 4.00, started 0.2 later due to delay Ack number 4
+ - node0 Sends Message with id = 4 and Content = $electric cars are quieter,$ at 4.00 without Modification, started 0.2 later due to delay Ack number 4
  - node1 Received Message with id = 4 and Content = $electric cars are quieter,$ at 4.00 without Modification Ack number 4
- - node0 Sends Message with id = 4 and Content = $electric cars are quieter,$ at 4.01 with Modification Ack number 4
+ - node0 Sends Message with id = 4 and Content = $electric cars are quieter,$ at 4.01 without Modification Ack number 4
  - node1 Received Message with id = 4 and Content = $electric cars are quieter,$ at 4.01 and It is duplicated, so it will be discard Ack number 4
  - node0 Sends Message with id = 5 and Content = $have no exhaust emissions, and lower emissions overall.$ at 4.20 Ack number 5
  - node1 Received Message with id = 5 and Content = $have no exhaust emissions, and lower emissions overall.$ at 4.20 without Modification Ack number 5
