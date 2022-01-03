@@ -27,9 +27,9 @@ void Node::handleMessage(cMessage *msg)
     /////////////
     //Cancel and Delete don't forget
 
-
     MyFile << std::fixed << std::setprecision(2);
     //MyFile.open("pair01.txt");
+
 
     //this will initial if it is not Initialized
     if (!isInitialized)
@@ -39,6 +39,8 @@ void Node::handleMessage(cMessage *msg)
     }
 
     MyMessage_Base* MsgRecived = (MyMessage_Base*) msg;
+
+    std::cout<<"Message ID: "<< MsgRecived->getSeq_Num() << " " << getName() << " " <<to_string(MsgRecived->getM_Type())<<endl; 
 
     //To wake Up from Coordinator
     if(MsgRecived->getM_Type() == Self_Message)
@@ -75,25 +77,40 @@ void Node::handleMessage(cMessage *msg)
     else if(MsgRecived->getM_Type() == ACK)
     {
         // Sender Code
+        MyFile  <<" - "<<getName()<<" Received ACK with id = " << std::to_string(MsgRecived->getSeq_Num()) <<" at "<<(double)simTime().dbl() << endl;
 
+        std::cout<<"ACK ID: "<< MsgRecived->getSeq_Num() << " " << getName() << " " <<to_string(MsgRecived->getM_Type())<<endl; 
         // checking if you get the first one
         if (MsgRecived->getSeq_Num() == left)
         {
-            // therefore you recieved the first one in the window and need to check if the next ones already got to advance them all
-            left ++ ;
-            right ++ ;
-            set<int>::iterator itr = acksRecieved.begin();
-            while (acksRecieved.begin() == left) // checking that next are already got
+            //Therefore you recieved the first one in the window and need to check if the next ones already got to advance them all
+            acksRecieved.insert(left);
+            //set<int>::iterator itr = acksRecieved.begin();
+            int DelayMult = 0;
+            while (*acksRecieved.begin() == left) // checking that next are already got
             {
                 acksRecieved.erase(left);
-                left++ ;
-                right++ ;
+                left++;
+                right++;
+                SendOneMsg(right,DelayMult*WindowsDelay); // since that sequence number = index 
+                //Sending the Right
+                correct++;
+                // incrementing currentMsg for sync , currentMsgIndex , msgId
+                CurrentMsg++;
+                CurrentMsgIndex++;
+                MsgId++;
+                //SendMsg();
             }
-        }else{
+        }
+        else
+        {
             // so you recieved ack but not for the first one you need to mark it if its within window
-            if(MsgRecived->getSeq_Num() > left && MsgRecived->getSeq_Num() < right){
+            if(MsgRecived->getSeq_Num() > left && MsgRecived->getSeq_Num() <= right && acksRecieved.find(MsgRecived->getSeq_Num()) != acksRecieved.end())
+            {
                 acksRecieved.insert(MsgRecived->getSeq_Num());
-            }else{
+            }
+            else
+            {
                 //wrong ack recieved (discard ?? or duplicate ?? )
                 duplicate++ ;
                 EV<< "recieved same ack so will discard" << std::endl ;
@@ -101,34 +118,32 @@ void Node::handleMessage(cMessage *msg)
                 return;
             } 
         }
-        
-
         // Get new msg and send
         // Mean duplicate (since we increment sequence number only if we receive ack)
         // so we receive first ack become 1 for example , and its still 1 when we receive next duplicate ack)
         // if(CurrentMsg - 1 == MsgRecived->getSeq_Num() )
         // {
-        //     duplicate++ ;
-        //     EV<< "recieved same ack so will discard" << std::endl ;
-        //     cancelAndDelete(msg);
-        //     return;
-        // }
+        //duplicate++ ;
+        //EV<< "recieved same ack so will discard" << std::endl ;
+        //cancelAndDelete(msg);
+        //return;
+        //// }
+        //correct++
+        //// incrementing currentMsg for sync , currentMsgIndex , msgId
+        //CurrentMsg++;
+        //CurrentMsgIndex++;
+        //MsgId++ ;
+        //// SendMsg();
+        /// SendOneMsg(right,0); // since that sequence number = index 
 
-        if(MsgRecived->getM_Type() == ACK) correct++ ;
-        else incorrect++;
-
-        // incrementing currentMsg for sync , currentMsgIndex , msgId
-        CurrentMsg++;
-        CurrentMsgIndex++;
-        MsgId++ ;
-        SendMsg();
-
-    }else if(MsgRecived->getM_Type() == NACK){
+    }
+    else if(MsgRecived->getM_Type() == NACK)
+    {
         // Sender Code
         // recieved nack so we need to resend this one again
-        
+        incorrect++;
         // check to see that the nack is on one of the frames within the window
-        if(MsgRecived->getSeq_Num() > left && MsgRecived->getSeq_Num() < right){
+        if(MsgRecived->getSeq_Num() > left && MsgRecived->getSeq_Num() <= right)
         {
             SendOneMsg(MsgRecived->getSeq_Num(),0); // since that sequence number = index 
         }
@@ -137,15 +152,16 @@ void Node::handleMessage(cMessage *msg)
     // timeOut case occurred
     else if(MsgRecived->getM_Type() == TimeOut)
     {
-
         // handling the case of timeOut where loss occurred
-        if(MsgRecived->getSeq_Num() == CurrentMsg){
+        if(MsgRecived->getSeq_Num() == CurrentMsg)
+        {
             std::cout << "entered timeout" << std::endl;
-            losses++ ;
-            // handling loss case since we wont be sending it again so will increment index inside vector messages only
-            CurrentMsgIndex++ ; // incrementing index only to send next message but with same id
-            MsgId++ ;
-            SendMsg();
+            // losses++ ;
+            // // handling loss case since we wont be sending it again so will increment index inside vector messages only
+            // CurrentMsgIndex++ ; // incrementing index only to send next message but with same id
+            // MsgId++ ;
+            // SendMsg();
+            SendOneMsg(MsgRecived->getSeq_Num(),0); // since that sequence number = index 
         }
         cancelAndDelete(msg);
 
@@ -171,6 +187,7 @@ void Node::ReceiveData(cMessage *msg,MyMessage_Base* MsgRecived)
     std::string MsgPayLoad = MsgRecived->getM_Payload();
     int reminder = computeCrcAtReciever(MsgPayLoad,MsgRecived->getTrailer());
     std::string MsgPayLoadDeframe = DeFrame(MsgPayLoad);
+    std::cout<<"Receiver Received Seq Num "<<MsgRecived->getSeq_Num()<<endl;
     if(reminder == 0)
     {
         //No error Happened log and Send ACK
@@ -196,14 +213,6 @@ void Node::ReceiveData(cMessage *msg,MyMessage_Base* MsgRecived)
 
 void Node::SendMsg()
 {
-    
-
-      if(CurrentMsgIndex == MessageQueue.size())
-      {
-            ///////End Simulation
-            PrintOutput();
-            return;
-      }
       //fe for loop with delay with currentMsgIndex
       int DelayIncrement = 0;
       for(int i = left ; i <= right ; i++)
@@ -218,6 +227,16 @@ void Node::SendMsg()
 
 void Node::SendOneMsg(int index, double FrameDelay)
 {
+    if(left >= MessageQueue.size())
+    {
+            ///////End Simulation
+            PrintOutput();
+            return;
+    }
+
+    if(index >= MessageQueue.size())
+        return;
+        
     MyMessage_Base* myMsg = new MyMessage_Base();
     std::string modtype = MessageQueueEffect[index];
     std::string MessageAfterFraming = Frame(MessageQueue[index]);
