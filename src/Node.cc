@@ -72,20 +72,47 @@ void Node::handleMessage(cMessage *msg)
             sendDelayed((cMessage *)ACKMsg, getParentModule()->par("delay").doubleValue(), "out");
         }
     }
-    else if(MsgRecived->getM_Type() == ACK || MsgRecived->getM_Type() == NACK)
+    else if(MsgRecived->getM_Type() == ACK)
     {
         // Sender Code
+
+        // checking if you get the first one
+        if (MsgRecived->getSeq_Num() == left)
+        {
+            // therefore you recieved the first one in the window and need to check if the next ones already got to advance them all
+            left ++ ;
+            right ++ ;
+            set<int>::iterator itr = acksRecieved.begin();
+            while (acksRecieved.begin() == left) // checking that next are already got
+            {
+                acksRecieved.erase(left);
+                left++ ;
+                right++ ;
+            }
+        }else{
+            // so you recieved ack but not for the first one you need to mark it if its within window
+            if(MsgRecived->getSeq_Num() > left && MsgRecived->getSeq_Num() < right){
+                acksRecieved.insert(MsgRecived->getSeq_Num());
+            }else{
+                //wrong ack recieved (discard ?? or duplicate ?? )
+                duplicate++ ;
+                EV<< "recieved same ack so will discard" << std::endl ;
+                cancelAndDelete(msg);
+                return;
+            } 
+        }
+        
 
         // Get new msg and send
         // Mean duplicate (since we increment sequence number only if we receive ack)
         // so we receive first ack become 1 for example , and its still 1 when we receive next duplicate ack)
-        if(CurrentMsg - 1 == MsgRecived->getSeq_Num() )
-        {
-            duplicate++ ;
-            EV<< "recieved same ack so will discard" << std::endl ;
-            cancelAndDelete(msg);
-            return;
-        }
+        // if(CurrentMsg - 1 == MsgRecived->getSeq_Num() )
+        // {
+        //     duplicate++ ;
+        //     EV<< "recieved same ack so will discard" << std::endl ;
+        //     cancelAndDelete(msg);
+        //     return;
+        // }
 
         if(MsgRecived->getM_Type() == ACK) correct++ ;
         else incorrect++;
@@ -95,6 +122,17 @@ void Node::handleMessage(cMessage *msg)
         CurrentMsgIndex++;
         MsgId++ ;
         SendMsg();
+
+    }else if(MsgRecived->getM_Type() == NACK){
+        // Sender Code
+        // recieved nack so we need to resend this one again
+        
+        // check to see that the nack is on one of the frames within the window
+        if(MsgRecived->getSeq_Num() > left && MsgRecived->getSeq_Num() < right){
+        {
+            SendOneMsg(MsgRecived->getSeq_Num(),0); // since that sequence number = index 
+        }
+                
     }
     // timeOut case occurred
     else if(MsgRecived->getM_Type() == TimeOut)

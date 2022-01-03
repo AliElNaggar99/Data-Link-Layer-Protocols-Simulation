@@ -18,7 +18,7 @@
 
 #include <omnetpp.h>
 #include "MyMessage_m.h"
-
+#include <set>
 using namespace omnetpp;
 
 /**
@@ -45,6 +45,8 @@ class Node : public cSimpleModule
   //Windows size
   int left = 0;
   int right =  0;
+
+  std::set<int> acksRecieved;
 
   double WindowsDelay = 0.0;
 
