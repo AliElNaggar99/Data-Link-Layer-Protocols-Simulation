@@ -8,7 +8,9 @@ network Network
 {
     parameters:
         double delay = default(0.2);
-    @display("bgb=650,512");
+        double WindowDelay = default(0.05);
+        int WindowSize = default(2);
+        @display("bgb=650,512");
     types:
     submodules:
         coordinator: Coordinator {
@@ -25,6 +27,6 @@ network Network
         coordinator.out1 --> node1.in_Coordinates;
         node1.out --> node0.in;
         node0.out --> node1.in;
-    
+
 }
 

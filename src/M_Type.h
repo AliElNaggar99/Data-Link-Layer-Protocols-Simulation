@@ -4,5 +4,7 @@ enum M_Type{
     DATA,
     Self_Message,
     TimeOut,
-    Duplicate
+    Duplicate,
+    ACK_TimeOut,
+    NACK_TimeOut
 };

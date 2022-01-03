@@ -1,30 +1,31 @@
- - node0 Sends Message with id = 0 and Content = $/$An aurora, also known as the polar lights/$ or aurora polaris,$ at 3.00 without Modification Ack number 0
- - node1 Received Message with id = 0 and Content = $/$An aurora, also known as the polar lights/$ or aurora polaris,$ at 3.00 without Modification Ack number 0
- - node0 Sends Message with id = 0 and Content = $/$An aurora, also known as the polar lights/$ or aurora polaris,$ at 3.01 without Modification Ack number 0
- - node1 Received Message with id = 0 and Content = $/$An aurora, also known as the polar lights/$ or aurora polaris,$ at 3.01 and It is duplicated, so it will be discard Ack number 0
- - node0 Sends Message with id = 1 and Content = $is a natural light display in Earth's sky,$ at 3.20 Ack number 1
- - node1 Received Message with id = 1 and Content = $is a natural light display in Earth's sky,$ at 3.20 without Modification Ack number 1
- - node0 Sends Message with id = 2 and Content = $predominantly seen in high-latitude regions$ at 3.40 without Modification Ack number 2
- - node1 Received Message with id = 2 and Content = $predominantly seen in high-latitude regions$ at 3.40 without Modification Ack number 2
- - node0 Sends Message with id = 2 and Content = $predominantly seen in high-latitude regions$ at 3.41 without Modification Ack number 2
- - node1 Received Message with id = 2 and Content = $predominantly seen in high-latitude regions$ at 3.41 and It is duplicated, so it will be discard Ack number 2
- - node0 Sends Message with id = 3 and Content = $(around the Arctic/? and Antarctic).$ at 3.60 with Modification Ack number 3
- - node1 Received Message with id = 3 and Content = $(around the Arctic/? and Antarctic).$ at 3.60 with Modification Ack number 3
- - node0 Sends Message with id = 3 and Content = $(around the Arctic/? and Antarctic).$ at 3.61 with Modification Ack number 3
- - node1 Received Message with id = 3 and Content = $(around the Arctic/? and Antarctic).$ at 3.61 and It is duplicated, so it will be discard Ack number 3
- - node0 Sends Message with id = 4 and Content = $Auroras display dynamic patterns of brilliant lights//$ at 3.80 Ack number 4
- - node1 Received Message with id = 4 and Content = $Auroras display dynamic patterns of brilliant lights//$ at 3.80 without Modification Ack number 4
- - node0 Sends Message with id = 5 and Content = $that appear as curtains,$ at 4.00 Ack number 5
- - node1 Received Message with id = 5 and Content = $that appear as curtains,$ at 4.00 without Modification Ack number 5
- - node0 Sends Message with id = 6 and Content = $rays, spirals/$$ at 4.20 Ack number 6
- - node1 Received Message with id = 6 and Content = $rays, spirals/$$ at 4.20 without Modification Ack number 6
- - node0 drops Message with id = 7 at 4.40
+ - node0 Sends Message with id = 0 and Content = $A flower, sometimes known as a bloom or blossom$ at 3.00 Ack number 0
+ - node0 Sends Message with id = 1 and Content = $is the reproductive/$ structure found in flowering plants$ at 3.05 Ack number 0
+ - node1 Received Message with id = 0 and Content = $A flower, sometimes known as a bloom or blossom$ at 3.00 without Modification Ack number 0
+ - node1 Received Message with id = 1 and Content = $is the reproductive/$ structure found in flowering plants$ at 3.05 without Modification Ack number 1
+ - node0 Sends Message with id = 0 and Content = $A flower, sometimes known as a bloom or blossom$ at 3.20 Ack number 1
+ - node0 Sends Message with id = 1 and Content = $is the reproductive/$ structure found in flowering plants$ at 3.25 Ack number 1
+ - node1 Received Message with id = 0 and Content = $A flower, sometimes known as a bloom or blossom$ at 3.20 and It is duplicated, so it will be discard Ack number 0
+ - node0 Sends Message with id = 0 and Content = $A flower, sometimes known as a bloom or blossom$ at 3.25 Ack number 2
+ - node0 Sends Message with id = 1 and Content = $is the reproductive/$ structure found in flowering plants$ at 3.30 Ack number 2
+ - node1 Received Message with id = 1 and Content = $is the reproductive/$ structure found in flowering plants$ at 3.25 and It is duplicated, so it will be discard Ack number 1
+ - node1 Received Message with id = 0 and Content = $A flower, sometimes known as a bloom or blossom$ at 3.25 and It is duplicated, so it will be discard Ack number 0
+ - node1 Received Message with id = 1 and Content = $is the reproductive/$ structure found in flowering plants$ at 3.30 and It is duplicated, so it will be discard Ack number 1
+ - node0 Sends Message with id = 0 and Content = $A flower, sometimes known as a bloom or blossom$ at 4.25 Ack number 2
+ - node0 Sends Message with id = 1 and Content = $is the reproductive/$ structure found in flowering plants$ at 4.30 Ack number 2
+ - node0 Sends Message with id = 0 and Content = $A flower, sometimes known as a bloom or blossom$ at 4.25 Ack number 2
+ - node0 Sends Message with id = 1 and Content = $is the reproductive/$ structure found in flowering plants$ at 4.30 Ack number 2
+ - node1 Received Message with id = 0 and Content = $A flower, sometimes known as a bloom or blossom$ at 4.25 and It is duplicated, so it will be discard Ack number 0
+ - node1 Received Message with id = 0 and Content = $A flower, sometimes known as a bloom or blossom$ at 4.25 and It is duplicated, so it will be discard Ack number 0
+ - node1 Received Message with id = 1 and Content = $is the reproductive/$ structure found in flowering plants$ at 4.30 and It is duplicated, so it will be discard Ack number 1
+ - node1 Received Message with id = 1 and Content = $is the reproductive/$ structure found in flowering plants$ at 4.30 and It is duplicated, so it will be discard Ack number 1
+ - node0 Sends Message with id = 0 and Content = $A flower, sometimes known as a bloom or blossom$ at 5.25 Ack number 2
+ - node0 Sends Message with id = 1 and Content = $is the reproductive/$ structure found in flowering plants$ at 5.30 Ack number 2
  ------------------------------------------------------------- 
  - node0 end of input file 
- - Total Transmission time : 5.40
- - correct : 6
- - duplicate : 3
- - losses : 1
- - incorrect : 1
- - Total number of Transmission : 11
- - Throughput : 1.11
+ - Total Transmission time : 2.25
+ - correct : 2
+ - duplicate : 8
+ - losses : 4
+ - incorrect : 0
+ - Total number of Transmission : 14
+ - Throughput : 0.89

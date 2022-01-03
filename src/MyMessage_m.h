@@ -73,6 +73,7 @@ class MyMessage_Base : public ::omnetpp::cPacket
     M_Type M_Type_Value;
     bool isModified ;
     bits mycheckbits;
+    bool haveData;
 
   private:
     void copy(const MyMessage_Base& other);
@@ -118,6 +119,9 @@ class MyMessage_Base : public ::omnetpp::cPacket
 
     virtual bool getIsModified() const {return (this)->isModified;}
     virtual void setIsModified(bool isModified_input){(this)->isModified = isModified_input;}
+
+    virtual bool gethaveData() const {return (this)->haveData;}
+    virtual void sethaveData(bool haveData_Input){(this)->haveData = haveData_Input;}
 };
 
 

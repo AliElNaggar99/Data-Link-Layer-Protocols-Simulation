@@ -34,24 +34,33 @@ class Node : public cSimpleModule
   int CurrentMsgIndex = 0; // as when we drop it will be incremented and CurrentMsg not ( to sync)
   bool isInitialized = false;
   int CurrentSeqNum = 0;
-
+  int startTime = 0;
   // calculations
   int duplicate = 0 ;
   int losses = 0 ;
   int correct = 0 ;
-  int incorrect = 0 ;
+  int incorrect = 0;
+
+
+  //Windows size
+  int left = 0;
+  int right =  0;
+
+  double WindowsDelay = 0.0;
 
 protected:
   virtual void initialize();
   virtual void handleMessage(cMessage *msg);
   void Initial(cMessage *msg);
   void ReadFromFile(std::string FileName);
-  void ModifyMessage(std::string modificationType, MyMessage_Base *msg);
+  void ModifyMessage(std::string modificationType, MyMessage_Base *msg,double FrameDelay);
   std::string Frame(std::string Msg);
   std::string DeFrame(std::string Msg);
   void SendMsg();
   void ReceiveData(cMessage *msg,MyMessage_Base* MsgRecived);
   void Timer();
+  void PrintOutput();
+  void SendOneMsg(int index, double FrameDelay);
 };
 
 #endif
