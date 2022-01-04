@@ -74,6 +74,7 @@ class MyMessage_Base : public ::omnetpp::cPacket
     bool isModified ;
     bits mycheckbits;
     bool haveData;
+    int ackId ; // will be message i need from other node 
 
   private:
     void copy(const MyMessage_Base& other);
@@ -122,6 +123,9 @@ class MyMessage_Base : public ::omnetpp::cPacket
 
     virtual bool gethaveData() const {return (this)->haveData;}
     virtual void sethaveData(bool haveData_Input){(this)->haveData = haveData_Input;}
+    
+    virtual bool getAckId() const {return (this)->ackId;}
+    virtual void setAckId(bool ackId_Input){(this)->ackId = ackId_Input;}
 };
 
 

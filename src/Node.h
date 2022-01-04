@@ -41,12 +41,17 @@ class Node : public cSimpleModule
   int correct = 0 ;
   int incorrect = 0;
 
+  //Recieving Windows size
+  std::set<int> framesRecieved;
+  int left_recieveBuffer = 0;
+  int right_recieveBuffer =  0;
 
-  //Windows size
-  int left = 0;
-  int right =  0;
-
+  //Sending Windows size
   std::set<int> acksRecieved;
+  int left_sendBuffer = 0;
+  int right_sendBuffer =  0;
+
+  int currentSent = 0 ;  
 
   double WindowsDelay = 0.0;
 
@@ -59,7 +64,7 @@ protected:
   std::string Frame(std::string Msg);
   std::string DeFrame(std::string Msg);
   void SendMsg();
-  void ReceiveData(cMessage *msg,MyMessage_Base* MsgRecived);
+  bool ReceiveData(cMessage *msg,MyMessage_Base* MsgRecived);
   void Timer();
   void PrintOutput();
   void SendOneMsg(int index, double FrameDelay);
