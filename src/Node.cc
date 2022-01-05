@@ -59,7 +59,7 @@ void Node::handleMessage(cMessage *msg)
         std::cout << "Received Message with id = "<< to_string(MsgRecived->getMessageId()) <<std::endl;
         //Check on SeqNum that i recieved the correct message within my buffer.
         // checking if you get the first one
-        if (MsgRecived->getAckId() == left_recieveBuffer)
+        if (MsgRecived->getSeq_Num() == left_recieveBuffer)
         {
             //Therefore you recieved the first one in the window 
             //and need to check if the next ones already got to advance them all
@@ -67,53 +67,255 @@ void Node::handleMessage(cMessage *msg)
             framesRecieved.insert(left_recieveBuffer);
             //set<int>::iterator itr = acksRecieved.begin();
             int DelayMult = 0;
+
+            // to check on first one only
+            bool noError  = ReceiveData(msg,MsgRecived);
+            if(noError == false)
+            {
+                // he already sent nack 
+                std:: cout << " Crc error happened !" <<std::endl ;
+                return ;
+            }
+
             while (*framesRecieved.begin() == left_recieveBuffer) // checking that next are already got
             {
                 framesRecieved.erase(left_recieveBuffer);
                 left_recieveBuffer++;
                 right_recieveBuffer++;
-                CurrentSeqNum++;
-                
 
+                // TODO :: ??????????????
+                // CurrentSeqNum++;
+
+                // TODO :: ??????????????
                 // take data and sends nack if the data is corrupted no matter order
-                // - - 2 - -
+                // 0 - - - -
                 // if 2 came with wrong crc we need to nak the 2 even before 0 in order not to save wrong data
                 // and when sender sends 2 again correctly , the code will handle the zero nak already..
-                bool errorHappened  = ReceiveData(msg,MsgRecived);
-                if(errorHappened == false)
-                {
-                    // he already sent nack 
-                    std:: cout << " Crc error happened !" <<std::endl ;
-                    return ;
-                } 
-
             }
         }else{
             // check if between left , right
             // send nack on the left
             
-            // TODO send nack !!!!!!!!!!!!!!!!!!!!!!!! 
-
             // TODO 2 : != framesRecieved.end() ? CHANGED TO == 
-            if(MsgRecived->getAckId() > left_recieveBuffer && MsgRecived->getAckId() <= right_sendBuffer 
-            && framesRecieved.find(MsgRecived->getAckId()) == framesRecieved.end())
+            if(MsgRecived->getSeq_Num() > left_recieveBuffer && MsgRecived->getSeq_Num() <= right_sendBuffer 
+            && framesRecieved.find(MsgRecived->getSeq_Num()) == framesRecieved.end())
             {
-                framesRecieved.insert(MsgRecived->getAckId());
+                framesRecieved.insert(MsgRecived->getSeq_Num());
+                // TODO send nack !!!!!!!!!!!!!!!!!!!!!!!! 
+                bool noError  = ReceiveData(msg,MsgRecived);
+                if(noError == false)
+                {
+                    // he already sent nack 
+                    std:: cout << " Crc error happened !" <<std::endl ;
+                    return ;
+                }
+                // send nack on the one it didnt come
+                // TODO:: !!!!!!!!
+                if(noMoreNak != left_recieveBuffer){
+                    noMoreNak = left_recieveBuffer;
+
+                    MyFile  <<" - "<<getName()<<" sends nack on " <<
+                                        std::to_string(left_recieveBuffer) <<" , at " << " "<<(double)simTime().dbl() << endl;
+                    incorrect++;
+                    MsgRecived->setAckId(left_recieveBuffer);
+                    SendOneMsg(MsgRecived->getAckId(),getParentModule()->par("delay").doubleValue(), NACK);
+                    return ;
+                }
+            }else{
+                MyFile  <<" - "<<getName()<<" Received duplicate with id = " <<
+                    std::to_string(MsgRecived->getSeq_Num()) << " data : " << MsgRecived->getM_Payload()
+                    <<" , at " << " "<<(double)simTime().dbl() << endl;
+                
+                cancelAndDelete(msg);
+                return ; 
             }
         }
 
+        std::cout <<"after recieving," << getName()  << " : current sent , left_recieveBuffer , right_recieveBuffer = " 
+            <<currentSent << " " << left_recieveBuffer<<" " << right_recieveBuffer << std::endl ;
+        
+
         // ACK ARRIVAL -------------------------------------------------------------------
+//        MyFile  <<" - "<<getName()<<" Received ACK with id = " <<
+//        std::to_string(MsgRecived->getAckId()) << " data : " << MsgRecived->getM_Payload()
+//        <<" , at " << " "<<(double)simTime().dbl() << endl;
 
-        MyFile  <<" - "<<getName()<<" Received ACK with id = " << 
-        std::to_string(MsgRecived->getAckId()) << " data : " << MsgRecived->getM_Payload() 
-        <<" , at " << " "<<(double)simTime().dbl() << endl;
-
-        std::cout<<"ACK ID: "<< MsgRecived->getAckId() << " " << getName() << " " <<to_string(MsgRecived->getM_Type())<<endl; 
+        // std::cout<<"ACK ID: "<< MsgRecived->getAckId() << " " << getName() << " " <<to_string(MsgRecived->getM_Type())<<endl; 
         // checking if you get the first one
+        
+        std::cout <<" starting data pipeling stage" << std::endl ;
+        // DATA PIPELING WITH THE ACK ------------------------------------
+        // we need to check if there exists data to send with the ack
+        
+        if (currentSent == MessageQueueEffect.size() )
+        {
+            // therefore no more data and we need to send acktimeout !
+            left_sendBuffer = right_sendBuffer ;
+            MsgRecived->setM_Type(ACK_TimeOut);
+            
+            MsgRecived->setAckId(left_recieveBuffer);
+            // no data so send here
+            std::cout <<" no data , so will send Ack_timeout : " << left_recieveBuffer<< std::endl ;
+            sendDelayed((cMessage *)MsgRecived, getParentModule()->par("delay").doubleValue(), "out");
+            return;
+        }
+
+        std::cout <<getName() << " current sent , left sendbuffer , right send buffer = " <<currentSent
+                << " " << left_sendBuffer<<" " << right_sendBuffer << std::endl ;
+        
+        // advancing send window stage --------------------------------------------
+        std :: cout <<" MsgRecived->getAckId() :" << MsgRecived->getAckId() << ",  left_sendBuffer : " << left_sendBuffer << endl;
         if (MsgRecived->getAckId() == left_sendBuffer+1)
         {
-            std::cout <<" ack recieved = left +1 now so we can advance" << std::endl ;
+            //Therefore you recieved the first one in the window and need to check if the next ones already got to advance them all
+            acksRecieved.insert(left_sendBuffer);
+            //set<int>::iterator itr = acksRecieved.begin();
+            int DelayMult = 0;
+            while (*acksRecieved.begin() == left_sendBuffer) // checking that next are already got
+            {
+                std::cout <<" ack recieved = left +1 now so we can advance" << std::endl ;
+                acksRecieved.erase(left_sendBuffer);
+                left_sendBuffer++;
+                right_sendBuffer++;
+                cout << " now after erasing , left_sendBuffer " << left_sendBuffer << " , right_sendBuffer "<< right_sendBuffer << endl ; 
 
+                // TODO :: if we recieved  - - 2 - - ? what do we send first ? or third ?  
+                
+                // TODO :: i removed sending multiples as we send only one  :: currentSent ??
+            }
+        }
+        else
+        {
+            std::cout << getName()  <<",,  debug !! ack got equal " << MsgRecived->getAckId()  << std::endl ;
+            // left = 2 , right = 3
+            // ack = 4
+            // so you recieved ack but not for the first one 
+//            if(MsgRecived->getAckId() > left_sendBuffer+1 && MsgRecived->getAckId() <= right_sendBuffer+1
+//            && acksRecieved.find(MsgRecived->getAckId()-1) == acksRecieved.end())
+//            {
+//                std::cout <<" ack got not equal first one but equal " << MsgRecived->getAckId()  << std::endl ;
+//                acksRecieved.insert(MsgRecived->getAckId() -1);
+//            }
+            // TODO :: now ack = 1, left = 0 mean we need frame 1 so we will advance window 
+            // duplicate we need to change it to check if its within acksrecieved or not 
+            if(acksRecieved.find(MsgRecived->getAckId()) != acksRecieved.end() )
+            {
+                // mean that we recieved same twice
+                //wrong ack recieved (discard ?? or duplicate ?? )
+                duplicate++ ;
+                EV<< "recieved same ack so will discard" << std::endl ;
+                //cancelAndDelete(msg);
+                return;
+            }else if(MsgRecived->getAckId() >= right_sendBuffer +1){
+                // cumulative ack :
+                // left 2  , right = 3 --> ack = 4
+                std::cout <<" accumulative ack !!!" << std::endl ;
+                acksRecieved.clear() ;
+                left_sendBuffer = MsgRecived->getAckId() ;
+                right_sendBuffer = left_sendBuffer + getParentModule()->par("WindowSize").intValue()-1;
+//                acksRecieved.insert(left_sendBuffer);
+//                while (*acksRecieved.begin() == left_sendBuffer) // checking that next are already got
+//                {
+//                    acksRecieved.erase(left_sendBuffer);
+//                    left_sendBuffer++;
+//                    right_sendBuffer++;
+//                }
+                cout << " now after erasing , left_sendBuffer " << left_sendBuffer << " , right_sendBuffer "<< right_sendBuffer << endl ;
+            }
+        }
+
+        //Sending message phase ---------------------------------------------------------------
+        if (currentSent <= right_sendBuffer && currentSent >= left_sendBuffer )
+        {
+            std::cout <<" sending message packed with new ack " << left_recieveBuffer << std::endl ;
+            
+            // therefore there's more to send 
+            SendOneMsg(currentSent , getParentModule()->par("delay").doubleValue()) ; 
+            std:: cout << getName() << ", currentSent : " << currentSent << endl ;
+            currentSent++;
+        }
+
+    }
+    else if(MsgRecived->getM_Type() == NACK)
+    {
+        std::cout <<" entered nack " << endl ;
+        // Sender Code
+        // recieved nack so we need to resend this one again
+        incorrect++;
+        // check to see that the nack is on one of the frames within the window
+        if(MsgRecived->getAckId() >= left_sendBuffer && MsgRecived->getAckId() <= right_sendBuffer)
+        {
+            // since that sequence number = index 
+            
+            // TODO : windows delay in nack not 0?
+            SendOneMsg(MsgRecived->getAckId(),getParentModule()->par("delay").doubleValue(),DATA_RETRANSMISSION);
+            std::cout << "currentSent in the nack block : " << currentSent << endl ;
+        }
+                
+    }
+    // TimeOut case occurred
+    else if(MsgRecived->getM_Type() == TimeOut)
+    {
+        // TODO :: changed since TimeOut now can come from 2 cases losses from me , or from reciever
+        std::cout << "recieved timeout for " << MsgRecived->getSeq_Num() << ".. will check now " << endl ;
+        // first we need to check if this timeout will be cancelled since i recieved ack from reciever
+        if(MsgRecived->getSeq_Num() == left_sendBuffer){
+            MyFile<<" - "<<getName()<<" got TimeOut on  "<< to_string(MsgRecived->getSeq_Num()) <<" at "<<((double)simTime().dbl())<< " Ack number " << std::to_string(MsgRecived->getAckId()) <<endl;
+            // so need to send it again
+            std::cout << MsgRecived->getSeq_Num() << " Timed out !" << std::endl;
+            SendOneMsg(MsgRecived->getSeq_Num(),0,DATA_RETRANSMISSION); // since that sequence number = index
+        }
+        //else discard 
+        cancelAndDelete(msg);
+        
+
+        // OLD CODE
+        // handling the case of timeOut where loss occurred
+        // if(MsgRecived->getSeq_Num() == CurrentMsg)
+        // {
+        //     std::cout << "entered timeout" << std::endl;
+        //     // losses++ ;
+        //     // // handling loss case since we wont be sending it again so will increment index inside vector messages only
+        //     // CurrentMsgIndex++ ; // incrementing index only to send next message but with same id
+        //     // MsgId++ ;
+        //     // SendMsg();
+        //     SendOneMsg(MsgRecived->getSeq_Num(),0); // since that sequence number = index 
+        // }
+        // cancelAndDelete(msg);
+
+    // duplicate case occurred
+    }
+    else if(MsgRecived->getM_Type() == Duplicate)
+    {
+            MsgRecived->setM_Type(DATA);
+            send((cMessage *)MsgRecived, "out");
+            string isModified = "";
+            if(MsgRecived->getIsModified() == true)
+                isModified = " with Modification";
+            else
+                isModified = " without Modification" ;
+
+            MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(MsgRecived->getMessageId()) <<" and Content = "<<MsgRecived->getM_Payload()<<" at "<<((double)simTime().dbl()) << isModified
+                    << " Ack number " << std::to_string(MsgRecived->getAckId()) <<endl;
+    }
+    else if(MsgRecived->getM_Type() == ACK_TimeOut)
+    {
+        // mean the sender has no data to take and he sent ack only
+
+
+        // TODO :: REDUNDANT CODE IN DATA SO ->FUNCTIONS
+        // ACK ARRIVAL -------------------------------------------------------------------
+
+//        MyFile  <<" - "<<getName()<<" Received ACK with id = " <<
+//        std::to_string(MsgRecived->getAckId()) << " data : " << MsgRecived->getM_Payload()
+//        <<" , at " << " "<<(double)simTime().dbl() << endl;
+
+        std::cout<<"recieved ACK_TimeOut : "<< MsgRecived->getAckId()<< " , left_sendBuffer : " << left_sendBuffer <<endl;
+        // checking if you get the first one
+        MyFile<<" - "<<getName()<<" recieved ACK_TimeOut : "<< to_string(MsgRecived->getMessageId()) <<" at "<<((double)simTime().dbl())<<" Ack number " << std::to_string(MsgRecived->getAckId()) <<endl;
+
+        if (MsgRecived->getAckId() == left_sendBuffer+1)
+        {
             //Therefore you recieved the first one in the window and need to check if the next ones already got to advance them all
             acksRecieved.insert(left_sendBuffer);
             //set<int>::iterator itr = acksRecieved.begin();
@@ -121,6 +323,7 @@ void Node::handleMessage(cMessage *msg)
             while (*acksRecieved.begin() == left_sendBuffer) // checking that next are already got
             {
 
+                std::cout <<" ack recieved = left +1 now so we can advance" << std::endl ;
                 acksRecieved.erase(left_sendBuffer);
                 left_sendBuffer++;
                 right_sendBuffer++;
@@ -142,7 +345,7 @@ void Node::handleMessage(cMessage *msg)
         {
             // so you recieved ack but not for the first one you need to mark it if its within window
             // TODO acksRecieved.find(MsgRecived->getAckId()) == acksRecieved.end()) -> == ??
-            if(MsgRecived->getAckId() > left_sendBuffer && MsgRecived->getAckId() <= right_sendBuffer && acksRecieved.find(MsgRecived->getAckId()) == acksRecieved.end())
+            if(MsgRecived->getAckId() > left_sendBuffer+1 && MsgRecived->getAckId() <= right_sendBuffer && acksRecieved.find(MsgRecived->getAckId()) == acksRecieved.end())
             {
                 std::cout <<" ack got not equal first one but equal " << MsgRecived->getAckId()  << std::endl ;
                 acksRecieved.insert(MsgRecived->getAckId());
@@ -163,73 +366,27 @@ void Node::handleMessage(cMessage *msg)
         std::cout <<" starting data pipeling stage" << std::endl ;
         // DATA PIPELING WITH THE ACK ------------------------------------
         // we need to check if there exists data to send with the ack
-        if (left_sendBuffer == MessageQueueEffect.size() || currentSent > right_sendBuffer)
+        std::cout <<getName()  << " current sent , left sendbuffer , right send buffer = " <<currentSent
+                << " " << left_sendBuffer<<" " << right_sendBuffer << std::endl ;
+
+        // TODO :: removed currentSent <= rightsend
+        if (currentSent == MessageQueueEffect.size() )
         {
-            // therefore no more data and we need to send acktimeout !
-            MsgRecived->setM_Type(ACK_TimeOut);
-            MsgRecived->setAckId(CurrentSeqNum);
-            // no data so send here
-            std::cout <<" no data , so will send Ack_timeout" << std::endl ;
-            sendDelayed((cMessage *)MsgRecived, getParentModule()->par("delay").doubleValue(), "out");
+            // therefore no more data and we recieved ackTimeout so both nodes have no messages
+            PrintOutput();
             return;
         }
-        std::cout <<" current sent , left sendbuffer , right send buffer = " <<currentSent
-                << " " << left_sendBuffer<<" " << right_sendBuffer << std::endl ;
+
+        //TODO
         if (currentSent <= right_sendBuffer && currentSent >= left_sendBuffer )
         {
             std::cout <<" sending message packed with new ack " << std::endl ;
             // therefore there's more to send
             // TODO : windows delay ? or getParentModule()->par("delay").doubleValue() ? or 0 ? 
             SendOneMsg(currentSent , getParentModule()->par("delay").doubleValue()) ; 
+            std:: cout << getName() << ", currentSent : " << currentSent << endl ;
             currentSent++;
         }
-    
-    }
-    else if(MsgRecived->getM_Type() == NACK)
-    {
-        // Sender Code
-        // recieved nack so we need to resend this one again
-        incorrect++;
-        // check to see that the nack is on one of the frames within the window
-        if(MsgRecived->getAckId() > left_sendBuffer && MsgRecived->getAckId() <= right_sendBuffer)
-        {
-            // since that sequence number = index 
-            
-            // TODO : windows delay in nack not 0?
-            SendOneMsg(left_sendBuffer,getParentModule()->par("delay").doubleValue()); 
-        }
-                
-    }
-    // timeOut case occurred
-    else if(MsgRecived->getM_Type() == TimeOut)
-    {
-        // handling the case of timeOut where loss occurred
-        if(MsgRecived->getAckId() == CurrentMsg)
-        {
-            std::cout << "entered timeout" << std::endl;
-            // losses++ ;
-            // // handling loss case since we wont be sending it again so will increment index inside vector messages only
-            // CurrentMsgIndex++ ; // incrementing index only to send next message but with same id
-            // MsgId++ ;
-            // SendMsg();
-            SendOneMsg(MsgRecived->getAckId(),0); // since that sequence number = index 
-        }
-        cancelAndDelete(msg);
-
-    // duplicate case occurred
-    }
-    else if(MsgRecived->getM_Type() == Duplicate)
-    {
-            MsgRecived->setM_Type(DATA);
-            send((cMessage *)MsgRecived, "out");
-            string isModified = "";
-            if(MsgRecived->getIsModified() == true)
-                isModified = " with Modification";
-            else
-                isModified = " without Modification" ;
-
-            MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(MsgRecived->getMessageId()) <<" and Content = "<<MsgRecived->getM_Payload()<<" at "<<((double)simTime().dbl()) << isModified
-                    << " Ack number " << std::to_string(MsgRecived->getAckId()) <<endl;
     }
 }
 
@@ -258,7 +415,7 @@ bool Node::ReceiveData(cMessage *msg,MyMessage_Base* MsgRecived)
 
         MyMessage_Base* ACKMsg = new MyMessage_Base();
         ACKMsg->setM_Type(NACK);
-        ACKMsg->setSeq_Num(CurrentSeqNum);
+        ACKMsg->setSeq_Num(MsgRecived->getSeq_Num());
         sendDelayed((cMessage *)ACKMsg, getParentModule()->par("delay").doubleValue(), "out");
         return false;
     }
@@ -275,16 +432,18 @@ void Node::SendMsg()
         currentSent++;
         DelayIncrement++;
       }
+        std:: cout << getName() << ", currentSent after window : " << currentSent << endl ;
 }
 
 
 
-void Node::SendOneMsg(int index, double FrameDelay)
+void Node::SendOneMsg(int index, double FrameDelay ,M_Type myType)
 {
     if(left_sendBuffer >= MessageQueue.size())
     {
             ///////End Simulation
-            PrintOutput();
+            // TODO : REMOVED IT FROM HERE AND put it in acktimeout if both
+            // PrintOutput();
             return;
     }
 
@@ -295,7 +454,7 @@ void Node::SendOneMsg(int index, double FrameDelay)
     std::string modtype = MessageQueueEffect[index];
     std::string MessageAfterFraming = Frame(MessageQueue[index]);
     char CRC = computeCrcAtSender(MessageAfterFraming);
-    myMsg->setM_Type(DATA);
+    myMsg->setM_Type(myType);
     myMsg->setM_Payload(MessageAfterFraming.c_str());
     myMsg->setTrailer(CRC);
     myMsg->setSendingTime((double)simTime().dbl());
@@ -305,9 +464,20 @@ void Node::SendOneMsg(int index, double FrameDelay)
     myMsg->setMessageId(index);
     
     // setting ack with the message i need
-    myMsg->setAckId(left_recieveBuffer);
+    // ack id = ? 
 
-    ModifyMessage(modtype, myMsg,FrameDelay);
+    myMsg->setAckId(left_recieveBuffer);
+    std::cout << "ack being sent -> " << left_recieveBuffer << endl ;
+
+    if(myType != DATA_RETRANSMISSION && myType!=NACK )
+        ModifyMessage(modtype, myMsg,FrameDelay);
+    else if(myType == DATA_RETRANSMISSION){
+            myMsg->setM_Type(DATA);
+            ModifyMessage("0000", myMsg,FrameDelay);
+    }else if(myType == NACK){
+        sendDelayed((cMessage *)myMsg, FrameDelay, "out");
+    }
+
 }
 
 std::string Node::Frame(std::string Msg)
@@ -381,7 +551,7 @@ void Node::ModifyMessage(std::string modificationType, MyMessage_Base *msg, doub
         {
             sendDelayed((cMessage *)msg, FrameDelay, "out");
             MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<((double)simTime().dbl()+FrameDelay)<<" with Modification"
-                    << " Ack number " << std::to_string(CurrentMsg) <<endl;
+                    << " Ack number " << std::to_string(msg->getAckId()) <<endl;
            // MyFile.close();
         }
 
@@ -392,6 +562,10 @@ void Node::ModifyMessage(std::string modificationType, MyMessage_Base *msg, doub
         /*Loss: the whole message should not be sent using the send function,
         but it should be included in the log file and the system calculations*/
         MyFile<<" - "<<getName()<<" drops Message with id = "<< to_string(msg->getMessageId()) <<" at "<<((double)simTime().dbl() + FrameDelay)<<endl;
+
+        // so others can preceed without this lost one
+        // currentSent++ ;
+
     }
     bool delayed = 0;
     if (modificationType[3] == '1')
@@ -409,7 +583,7 @@ void Node::ModifyMessage(std::string modificationType, MyMessage_Base *msg, doub
 
             if(modificationType[2] == '0'){
                 MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<((double)simTime().dbl()+FrameDelay)<<isModified<<" Delayed with time = "<<(double)(getParentModule()->par("delay").doubleValue())
-                        << " Ack number " << std::to_string(CurrentMsg) <<endl;
+                        << " Ack number " << std::to_string(msg->getAckId()) <<endl;
 
                 sendDelayed((cMessage *)msg, FrameDelay + getParentModule()->par("delay").doubleValue(), "out");
             }
@@ -436,11 +610,13 @@ void Node::ModifyMessage(std::string modificationType, MyMessage_Base *msg, doub
          // 1) send the first message
          if(modificationType[1] != '1'){
             sendDelayed((cMessage *)msg , delayValue + FrameDelay, "out");
-            MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<((double)simTime().dbl() + delayValue + FrameDelay)<< isModified << delayString
-                    << " Ack number " << std::to_string(CurrentMsg) <<endl;
+
             MyMessage_Base* NewMsg = new MyMessage_Base(*msg);
+            MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<((double)simTime().dbl() + delayValue + FrameDelay)<< isModified << delayString
+                                << " Ack number " << std::to_string(NewMsg->getAckId()) <<endl;
             NewMsg->setM_Type(Duplicate);
             NewMsg->setIsModified(modificationType[0]=='1'? true : false);
+            
             // 2) send the second message with the same message after 0.01 second
             scheduleAt(simTime() + 0.01 + delayValue + FrameDelay, (cMessage*)NewMsg);
         }else
@@ -454,17 +630,17 @@ void Node::ModifyMessage(std::string modificationType, MyMessage_Base *msg, doub
     {
         sendDelayed((cMessage *)msg, FrameDelay, "out");
         MyFile<<" - "<<getName()<<" Sends Message with id = "<< to_string(msg->getMessageId()) <<" and Content = "<<msg->getM_Payload()<<" at "<<((double)simTime().dbl()+FrameDelay)
-        << " Ack number " << std::to_string(CurrentMsg) <<endl;
+        << " Ack number " << std::to_string(msg->getAckId()) <<endl;
         //MyFile.close();
     }
 
-    Timer();
+    Timer(msg->getSeq_Num());
 }
 
-void Node::Timer(){
+void Node::Timer(int seq_nr){
     MyMessage_Base *myMsg = new MyMessage_Base();
     myMsg->setM_Type(TimeOut);
-    myMsg->setSeq_Num(CurrentMsg);
+    myMsg->setSeq_Num(seq_nr);
     scheduleAt(simTime() + 1, (cMessage*)myMsg);
 }
 
@@ -491,8 +667,9 @@ void Node::Initial(cMessage *msg)
     isInitialized = true;
 
     //Greater than One means it contains more than the input file name
-    if (MessageSplit.size() > 1)
+    if (MessageSplit.size() > 1) // sender
     {
+
         //get last digit in the string as it represent the start time
         int Start = std::stoi(MessageSplit[MessageSplit.size() - 1]);
         startTime = Start;
@@ -502,12 +679,14 @@ void Node::Initial(cMessage *msg)
     }
 }
 
-void Node::ReadFromFile(std::string FileName)
+void Node::ReadFromFile(std::string FileName )
 {
     //"E:/5th Semester CCE/Computer Networks/Project/Project Code/Data-Link-Layer-Protocols-Simulation/inputs_samples/coordinator.txt";
     std::string location = "E:/5th Semester CCE/Computer Networks/Project/Project Code/Data-Link-Layer-Protocols-Simulation/inputs_samples/" + FileName;
     std::ifstream file(location);
     std::string str;
+
+
     while (std::getline(file, str))
     {
         // Process str

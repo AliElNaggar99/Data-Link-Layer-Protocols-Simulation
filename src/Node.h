@@ -51,9 +51,11 @@ class Node : public cSimpleModule
   int left_sendBuffer = 0;
   int right_sendBuffer =  0;
 
+  int noMoreNak = -1 ;
   int currentSent = 0 ;  
 
   double WindowsDelay = 0.0;
+
 
 protected:
   virtual void initialize();
@@ -65,9 +67,9 @@ protected:
   std::string DeFrame(std::string Msg);
   void SendMsg();
   bool ReceiveData(cMessage *msg,MyMessage_Base* MsgRecived);
-  void Timer();
+  void Timer(int);
   void PrintOutput();
-  void SendOneMsg(int index, double FrameDelay);
+  void SendOneMsg(int index, double FrameDelay ,M_Type mytype = DATA);
 };
 
 #endif

@@ -209,7 +209,7 @@ void MyMessage_Base::copy(const MyMessage_Base& other)
     this->messageId = other.messageId;
     this->sendingTime = other.sendingTime;
     this->Trailer = other.Trailer;
-
+    this->ackId = other.ackId ;
 }
 
 void MyMessage_Base::parsimPack(omnetpp::cCommBuffer *b) const

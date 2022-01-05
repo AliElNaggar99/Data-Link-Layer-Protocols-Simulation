@@ -124,8 +124,8 @@ class MyMessage_Base : public ::omnetpp::cPacket
     virtual bool gethaveData() const {return (this)->haveData;}
     virtual void sethaveData(bool haveData_Input){(this)->haveData = haveData_Input;}
     
-    virtual bool getAckId() const {return (this)->ackId;}
-    virtual void setAckId(bool ackId_Input){(this)->ackId = ackId_Input;}
+    virtual int getAckId() const {return (this)->ackId;}
+    virtual void setAckId(int ackId_Input){(this)->ackId = ackId_Input;}
 };
 
 
