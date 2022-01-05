@@ -1,27 +1,142 @@
- - node0 Sends Message with id = 0 and Content = $Sherlock Holmes is a fictional detective$ at 3.00 Ack number 0
- - node1 Received Message with id = 0 and Content = $Sherlock Holmes is a fictional detective$ at 3.00 without Modification Ack number 0
- - node0 Sends Message with id = 1 and Content = $created by British author/$ Sir Arthur Conan Doyle.$ at 3.20 Ack number 1
- - node1 Received Message with id = 1 and Content = $created by British author/$ Sir Arthur Conan Doyle.$ at 3.20 without Modification Ack number 1
- - node0 Sends Message with id = 1 and Content = $created by British author/$ Sir Arthur Conan Doyle.$ at 3.21 with Modification Ack number 1
- - node1 Received Message with id = 1 and Content = $created by British author/$ Sir Arthur Conan Doyle.$ at 3.21 and It is duplicated, so it will be discard Ack number 1
- - node0 drops Message with id = 2 at 3.40
- - node0 Sends Message with id = 3 and Content = $Holmes is known for his proficiency with observation,$ at 4.40 Ack number 2
- - node1 Received Message with id = 3 and Content = $Holmes is known for his proficiency with observation,$ at 4.40 without Modification Ack number 2
- - node0 Sends Message with id = 4 and Content = $deduction, forensic science,$ at 4.60 Ack number 3
- - node1 Received Message with id = 4 and Content = $deduction, forensic science,$ at 4.60 without Modification Ack number 3
- - node0 Sends Message with id = 5 and Content = $and// logical reasoning/$ that borders on the fantastic,$ at 4.80 Ack number 4
- - node1 Received Message with id = 5 and Content = $and// logical reasoning/$ that borders on the fantastic,$ at 4.80 without Modification Ack number 4
- - node0 drops Message with id = 6 at 5.00
- - node0 Sends Message with id = 6 and Content = $which he employs when investigating cases for a wide variety of clients,$ at 5.00 Delayed with time = 0.200000 Ack number 5
- - node1 Received Message with id = 6 and Content = $which he employs when investigating cases for a wide variety of clients,$ at 5.20 without Modification Ack number 5
- - node0 Sends Message with id = 7 and Content = $including Scotland Yard.$ at 5.40 Ack number 6
- - node1 Received Message with id = 7 and Content = $including Scotland Yard.$ at 5.40 without Modification Ack number 6
+ - node1 Received Message with id = 0 and Content = $A flower, sometimes known0as a bloom or blossom$ at 3.00 with Modification Ack number 0
+ - node1 Received Message with id = 0 and Content = $A flower, sometimes known0as a bloom or blossom$ at 3.01 with Modification Ack number 0
+ - node1 Received Message with id = 1 and Content = $is the reproductive/$ structure found in flowering plants$ at 3.05 witho - node0 Sends Message with id = 0 and Content = $A flower, sometim - node1 Received Message with id = 0 and Content = $A - node0 Received Message with id = 0 and Content = $The violin, sometimes known as a fiddle$ at 3.65 without Modification Ack number 2
+ - node0 drops Message with id = 2 at 3.85
+ - node0 Received duplicate with id = 0 data : $The violin, sometimes known as a fiddle$ , at  4.45
+ - node0 got TimeOut on  2 at 4.65
+ - node0 Sends Message with id = 2  - node1 Received Message with id = 2 and Content = $(plants of the division Magnoliophyta, also called// a - node0 Received Message with id = 1 and Content = $is a wooden chordophone (string instrument)$ at 4.85 without Modification Ack number 3
+ - node0 Sends Message with id = 3 and Content = $The bi - node1 Sends Message with id = 1 and Content = $is a wooden chordophone (string in - node0 Received duplicate with id = 1 data : $is a w - node1 Received Message with id = 3 and Content = - node0 got TimeOut on  3 at 5.85
+ - node0 Sends Message with id = 3 and Content = $The biological function of a flower is to facilitate reproduction,$ at  - node1 Received d - node0 Received Message with id = 2 and Content = $in the violin family.$ at 6.05 without Modification Ack number 4
+ - node0 Sends Message with id = 4 and Content = $usually by providing a mechanism for the union of sperm with eggs.$ at  - node1 Received Message with id = 4 and Co - node0 got TimeOut on  4 at 7.05
+ - node0 Sends Message with id = 4 and Content = $usually by providing a mechanism for the union of sperm with eggs.$ at 7.05 Ac - node1 Rec - node0 Received Message with id = 3 and Content = $Most violins have a hollow wooden body.$ at 7.45 without Modification Ack number 5
+ - node0 Sends Message with id = 5 and Content = $Flowers may facilitate outcrossing/$$ at 7.65 Ack number 4
+ - node0 Received Message with id = 4 and Content = $It is the smallest and thus highest-pitched instrument$ at 7.85 without Modification Ack number 6
+ - node0 Sends Message with id = 6 and Content = $(fusion of sperm and eggs from different individuals in a population)$ at 8.05 - node1 Receiv - node0 Received Message with id = 5 and Content = $(soprano) in the family in regular use.$ at 8.25 without Modification Ack number 7
+ - node0 Received Message with id = 6 and Content = $[a] The violin typically has four strings,$ at 8.65 without Modification Ack number 7
+ - node0 Received Message with id = 7 and Content = $(some can have five/$), usually tuned in perfect$ at 9.05 without Modification Ack number 7
+ - node0 Received Message with id = 8 and Content = $fifths with notes G3, D4, A4, E5,$ at 9.45 without Modification Ack number 7
+ - node0 Received Message with id = 9 and Content = $and is most commonly played by drawing$ at 10.65 without Modification Ack number 7
+ - node0 Received Message with id = 10 and Content = $a bow across its strings.$ at 11.05 without Modification Ack number 7
+ - node0 Received Message with id = 11 and Content = $It can also be played by plucking$ at 11.45 without Modification Ack number 7
+ - node0 Received Message with id = 12 and Content = $the strings/$ with the fingers (pizzic`to)$ at 12.05 with Modification Ack number 7
+ - node0 Received Message with id = 12 and Content = $the strings/$ with the fingers (pizzicato)$ at 12.65 without Modification Ack number 7
+ - node0 Received Message with id = 13 and Content = $and, in specialized cases, by striking$ at 13.05 without Modification Ack number 7
+ - node0 Received Message with id = 14 and Content = $the strings with the wooden side/$ of the bow$ at 13.45 without Modification Ack number 7
+ - node0 Received duplicate with id = 14 data : $the strings with the wooden side/$ of the bow$ , at  13.46
+ - node0 Received Message with id = 15 and Content = $(col legno).$ at 13.85 without Modification Ack number 7
+node1 recieved ACK_TimeOut : 12 at 12.85 Ack number 13
+ - node1 Sends Message with id = 13 and Content = $and, in specialized cases, by striking$ at 13.05 Ack number 7
+ - node1 recieved ACK_TimeOut : 13 at 13.25 Ack number 14
+ - node1 Sends Message with id = 14 and Content = $the strings with the wooden side/$ of the bow$ at 13.45 without Modification Ack number 7
+ - node1 Sends Message with id = 14 and Content = $the strings with the wooden side/$ of the bow$ at 13.46 without Modification Ack number 7
+ - node1 recieved ACK_TimeOut : 14 at 13.65 Ack number 15
+ - node1 Sends Message with id = 15 and Content = $(col legno).$ at 13.85 Ack number 7
+ - node1 recieved ACK_TimeOut : 15 at 14.05 Ack number 16
  ------------------------------------------------------------- 
- - node0 end of input file 
- - Total Transimission time : 5.60
- - correct : 7
+ - node1 end of input file 
+ - Total Transmission time : 14.05
+ - correct : 0
  - duplicate : 1
- - losses : 1
- - incorrect : 0
- - Total number of Transimission : 9
- - Throughput : 1.25
+ - losses : 0
+ - incorrect : 2
+ - Total number of Transmission : 3
+ - Throughput : 0.00
+ - node0 Sends Message with id = 0 and Content = $A flower, sometimes known0as a bloom or blossom$ at 3.00 with Modification Ack number 0
+ - node0 Sends Message with id = 1 and Content = $is the reproductive/$ structure found in flowering plants$ at 3.05 Ack number 0
+ - node1 Received Message with id = 0 and Content = $A flower, sometimes known0as a bloom or blossom$ at 3.00 with Modification Ack number 0
+ - node0 Sends Message with id = 0 and Content = $A flower, sometimes known0as a bloom or blossom$ at 3.01 with Modification Ack number 0
+ - node1 Received Message with id = 0 and Content = $A flower, sometimes known0as a bloom or blossom$ at 3.01 with Modification Ack number 0
+ - node1 Received Message with id = 1 and Content = $is the reproductive/$ structure found in flowering plants$ at 3.05 without Modification Ack number 0
+ - node1 sends nack on 0 , at  3.05
+ - node0 Sends Message with id = 0 and Content = $A flower, sometimes known as a bloom or blossom$ at 3.40 Ack number 0
+ - node0 Sends Message with id = 0 and Content = $A flower, sometimes known as a bloom or blossom$ at 3.41 Ack number 0
+ - node0 Sends Message with id = 0 and Content = $A flower, sometimes known as a bloom or blossom$ at 3.45 Ack number 0
+ - node1 Received Message with id = 0 and Content = $A flower, sometimes known as a bloom or blossom$ at 3.40 without Modification Ack number 0
+ - node1 Sends Message with id = 0 and Content = $The violin, sometimes known as a fiddle$ at 3.60 Ack number 2
+ - node1 Received duplicate with id = 0 data : $A flower, sometimes known as a bloom or blossom$ , at  3.41
+ - node1 Received duplicate with id = 0 data : $A flower, sometimes known as a bloom or blossom$ , at  3.45
+ - node0 Received Message with id = 0 and Content = $The violin, sometimes known as a fiddle$ at 3.60 without Modification Ack number 2
+ - node0 drops Message with id = 2 at 3.80
+ - node1 got TimeOut on  0 at 4.40
+ - node1 Sends Message with id = 0 and Content = $The violin, sometimes known as a fiddle$ at 4.40 Ack number 2
+ - node0 Received duplicate with id = 0 data : $The violin, sometimes known as a fiddle$ , at  4.40
+ - node0 got TimeOut on  2 at 4.60
+ - node0 Sends Message with id = 2 and Content = $(plants of the division Magnoliophyta, also called// angiosperms/$).$ at 4.60 Ack number 1
+ - node1 Received Message with id = 2 and Content = $(plants of the division Magnoliophyta, also called// angiosperms/$).$ at 4.60 without Modification Ack number 1
+ - node1 Sends Message with id = 1 and Content = $is a wooden chordophone (string instrument)$ at 4.80 without Modification Ack number 3
+ - node0 Received Message with id = 1 and Content = $is a wooden chordophone (string instrument)$ at 4.80 without Modification Ack number 3
+ - node0 Sends Message with id = 3 and Content = $The biological function of a flower is to facilitate reproduction,$ at 5.00 Ack number 2
+ - node1 Sends Message with id = 1 and Content = $is a wooden chordophone (string instrument)$ at 4.81 without Modification Ack number 3
+ - node0 Received duplicate with id = 1 data : $is a wooden chordophone (string instrument)$ , at  4.81
+ - node1 Received Message with id = 3 and Content = $The biological function of a flower is to facilitate reproduction,$ at 5.00 without Modification Ack number 2
+ - node1 drops Message with id = 2 at 5.20
+ - node0 got TimeOut on  3 at 5.80
+ - node0 Sends Message with id = 3 and Content = $The biological function of a flower is to facilitate reproduction,$ at 5.80 Ack number 2
+ - node1 Received duplicate with id = 3 data : $The biological function of a flower is to facilitate reproduction,$ , at  5.80
+ - node1 got TimeOut on  2 at 6.00
+ - node1 Sends Message with id = 2 and Content = $in the violin family.$ at 6.00 Ack number 4
+ - node0 Received Message with id = 2 and Content = $in the violin family.$ at 6.00 without Modification Ack number 4
+ - node0 Sends Message with id = 4 and Content = $usually by providing a mechanism for the union of sperm with eggs.$ at 6.20 Delayed with time = 0.20 Ack number 3
+ - node1 Received Message with id = 4 and Content = $usually by providing a mechanism for the union of sperm with eggs.$ at 6.40 without Modification Ack number 3
+ - node1 drops Message with id = 3 at 6.60
+ - node0 got TimeOut on  4 at 7.00
+ - node0 Sends Message with id = 4 and Content = $usually by providing a mechanism for the union of sperm with eggs.$ at 7.00 Ack number 3
+ - node1 Received duplicate with id = 4 data : $usually by providing a mechanism for the union of sperm with eggs.$ , at  7.00
+ - node1 got TimeOut on  3 at 7.40
+ - node1 Sends Message with id = 3 and Content = $Most violins have a hollow wooden body.$ at 7.40 Ack number 5
+ - node0 Received Message with id = 3 and Content = $Most violins have a hollow wooden body.$ at 7.40 without Modification Ack number 5
+ - node0 Sends Message with id = 5 and Content = $Flowers may facilitate outcrossing/$$ at 7.60 Ack number 4
+ - node1 Received Message with id = 5 and Content = $Flowers may facilitate outcrossing/$$ at 7.60 without Modification Ack number 4
+ - node1 Sends Message with id = 4 and Content = $It is the smallest and thus highest-pitched instrument$ at 7.80 Ack number 6
+ - node0 Received Message with id = 4 and Content = $It is the smallest and thus highest-pitched instrument$ at 7.80 without Modification Ack number 6
+ - node0 Sends Message with id = 6 and Content = $(fusion of sperm and eggs from different individuals in a population)$ at 8.00 Ack number 5
+ - node1 Received Message with id = 6 and Content = $(fusion of sperm and eggs from different individuals in a population)$ at 8.00 without Modification Ack number 5
+ - node1 Sends Message with id = 5 and Content = $(soprano) in the family in regular use.$ at 8.20 Ack number 7
+ - node0 Received Message with id = 5 and Content = $(soprano) in the family in regular use.$ at 8.20 without Modification Ack number 7
+ - node1 recieved ACK_TimeOut : 5 at 8.40 Ack number 6
+ - node1 Sends Message with id = 6 and Content = $[a] The violin typically has four strings,$ at 8.60 Ack number 7
+ - node0 Received Message with id = 6 and Content = $[a] The violin typically has four strings,$ at 8.60 without Modification Ack number 7
+ - node1 recieved ACK_TimeOut : 6 at 8.80 Ack number 7
+ - node1 Sends Message with id = 7 and Content = $(some can have five/$), usually tuned in perfect$ at 9.00 Ack number 7
+ - node0 Received Message with id = 7 and Content = $(some can have five/$), usually tuned in perfect$ at 9.00 without Modification Ack number 7
+ - node1 recieved ACK_TimeOut : 7 at 9.20 Ack number 8
+ - node1 Sends Message with id = 8 and Content = $fifths with notes G3, D4, A4, E5,$ at 9.40 Ack number 7
+ - node0 Received Message with id = 8 and Content = $fifths with notes G3, D4, A4, E5,$ at 9.40 without Modification Ack number 7
+ - node1 recieved ACK_TimeOut : 8 at 9.60 Ack number 9
+ - node1 drops Message with id = 9 at 9.80
+ - node1 got TimeOut on  9 at 10.60
+ - node1 Sends Message with id = 9 and Content = $and is most commonly played by drawing$ at 10.60 Ack number 7
+ - node0 Received Message with id = 9 and Content = $and is most commonly played by drawing$ at 10.60 without Modification Ack number 7
+ - node1 recieved ACK_TimeOut : 9 at 10.80 Ack number 10
+ - node1 Sends Message with id = 10 and Content = $a bow across its strings.$ at 11.00 Ack number 7
+ - node0 Received Message with id = 10 and Content = $a bow across its strings.$ at 11.00 without Modification Ack number 7
+ - node1 recieved ACK_TimeOut : 10 at 11.20 Ack number 11
+ - node1 Sends Message with id = 11 and Content = $It can also be played by plucking$ at 11.40 Ack number 7
+ - node0 Received Message with id = 11 and Content = $It can also be played by plucking$ at 11.40 without Modification Ack number 7
+ - node1 recieved ACK_TimeOut : 11 at 11.60 Ack number 12
+ - node1 Sends Message with id = 12 and Content = $the strings/$ with the fingers (pizzic`to)$ at 11.80 with Modification Delayed with time = 0.20 Ack number 7
+ - node0 Received Message with id = 12 and Content = $the strings/$ with the fingers (pizzic`to)$ at 12.00 with Modification Ack number 7
+ - node1 got TimeOut on  12 at 12.60
+ - node1 Sends Message with id = 12 and Content = $the strings/$ with the fingers (pizzicato)$ at 12.60 Ack number 7
+ - node0 Received Message with id = 12 and Content = $the strings/$ with the fingers (pizzicato)$ at 12.60 without Modification Ack number 7
+ - node1 recieved ACK_TimeOut : 12 at 12.80 Ack number 13
+ - node1 Sends Message with id = 13 and Content = $and, in specialized cases, by striking$ at 13.00 Ack number 7
+ - node0 Received Message with id = 13 and Content = $and, in specialized cases, by striking$ at 13.00 without Modification Ack number 7
+ - node1 recieved ACK_TimeOut : 13 at 13.20 Ack number 14
+ - node1 Sends Message with id = 14 and Content = $the strings with the wooden side/$ of the bow$ at 13.40 without Modification Ack number 7
+ - node0 Received Message with id = 14 and Content = $the strings with the wooden side/$ of the bow$ at 13.40 without Modification Ack number 7
+ - node1 Sends Message with id = 14 and Content = $the strings with the wooden side/$ of the bow$ at 13.41 without Modification Ack number 7
+ - node0 Received duplicate with id = 14 data : $the strings with the wooden side/$ of the bow$ , at  13.41
+ - node1 recieved ACK_TimeOut : 14 at 13.60 Ack number 15
+ - node1 Sends Message with id = 15 and Content = $(col legno).$ at 13.80 Ack number 7
+ - node0 Received Message with id = 15 and Content = $(col legno).$ at 13.80 without Modification Ack number 7
+ - node1 recieved ACK_TimeOut : 15 at 14.00 Ack number 16
+ ------------------------------------------------------------- 
+ - node1 end of input file 
+ - Total Transmission time : 14.00
+ - correct : 0
+ - duplicate : 1
+ - losses : 0
+ - incorrect : 2
+ - Total number of Transmission : 3
+ - Throughput : 0.00

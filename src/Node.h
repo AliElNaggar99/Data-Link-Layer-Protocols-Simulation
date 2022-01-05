@@ -58,7 +58,7 @@ class Node : public cSimpleModule
 
 
   std::string filename = "pair01.txt";
-//  std::ofstream MyFile;
+  std::ofstream MyFile;
 
 protected:
   virtual void initialize();

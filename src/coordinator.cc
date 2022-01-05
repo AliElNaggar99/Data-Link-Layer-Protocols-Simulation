@@ -34,7 +34,7 @@ void Coordinator::handleMessage(cMessage *msg)
 
     //File locations should change depending on absolute path of the text file
     
-    std::string location = "E:/5th Semester CCE/Computer Networks/Project/Project Code/Data-Link-Layer-Protocols-Simulation/inputs_samples/coordinator.txt";
+    std::string location = "D:/Downloads/Compressed/omnetpp-5.7-windows-x86_64/omnetpp-5.7/samples/Data-Link-Layer-Protocols-Simulation/inputs_samples/coordinator.txt";
     std::ifstream file (location);
     std::string str; 
 

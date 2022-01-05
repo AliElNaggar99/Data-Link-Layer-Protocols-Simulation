@@ -23,4 +23,8 @@ simple Coordinator
      gates:
         output out0;
         output out1;
+        output out2;
+        output out3;
+        output out4;
+        output out5;
 }

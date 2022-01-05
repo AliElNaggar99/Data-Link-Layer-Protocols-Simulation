@@ -1,0 +1,83 @@
+ - node3 Received Message with id = 0 and Content = $Sherlock Holmes is a fictional detective$ at 3.00 without Modification Ack number 0
+ - node3 Sends Message with id = 0 and Content = $A cherry blossom is a flower of many trees of genus/$ Prunus or Prunus s - node2 Sends Message with id = 1 and Content = $created by British author/$ Sir Arthur Conan Doyle.$ at 3.06 without Modification Ack number 0
+ - node2 Received Message with id = 0 and Content = $A cherry blossom is a flower of many trees of genus/$ Prunus or Prunus subg.$ at 3.40 without Modification Ack number 1
+ - node2 drops Message with id = 2 at 3.60
+ - node2 Received Message with id = 1 and Content = $They are also known as Japanese cherry and Sakura$ at 3.45 without Modific - node3 Sends Message with id = 1 and Content = $They are also known as Japanese cherry and Sakura$ at 3.46 without Modification Ack number 2
+ - node3 Received Message with id = 3 and Content = $Holmes is known for his proficiency with observation,$ at 3.6 - node2 Sends Message with id = 2 and Content = $Referring to himself as  - node3 got TimeOut on  0 at 4.00
+ - node3 Sends Message with id - node2 Received duplicate with id = 0 data : $A cherry blossom is a flower of many trees of genus/$ Prunus or Prunus s - node3 Received  - node2 Received Message with id = 2 and Content = $They generally refer to /$ ornamental cherry trees,$ at 4.25 without Modification Ack number 4
+ - node2 Sends Message with id = 4 and Content = $deduction, forensic science,$ at 4.45 Ack number 3
+ - node2 Received Message with id = 3 and Content = $not to be confused with cherry trees that// produce fruit for eating.$ at 4.65 without Modification Ack number 5
+ - node2 Sends Message with id = 5 and Content = $and// logical reasoning/$ that borders on the fantastic,$ at 4.85 Ack nu - node3 - node2 Received Message with id = 4 and Content = $It is considered// the nat)onal flower of Japan.$ at 5.05 with Modification Ack number 6
+ - node2 got TimeOut on  5 at 5.65
+ - node2 Sends Message with id = 5 and Content = $and// logical reasoning/$ that borders on the fantastic,$ - node3 Received dupli - node2 Received Message with id = 4 and Content = $It is considered// the national flower of Japan.$ at 5.85 without Modification Ack number 6
+ - node2 drops Message with id = 6 at 6.05
+ - node2 got TimeOut on  6 at 6.85
+ - node2 Sends Message with id = 6 and Content = $which he employs when investigating cases for a wide variety of clients,$ at 6.85 Ack number 5
+ - node2 Received duplicate with id = 4 - node3 Received Message with id = 6 and Content = $which he employs w - node2 recieved ACK_TimeOut : 6 at 7.05 Ack number 7
+ - node2 Sends Message with id = 7 and Cont - node3 Received Message with id = 7 and Content = $in - node2 recieved ACK_TimeOut : 7 at 7.45 Ack number 8
+ ------------------------------------------------------------- 
+ - node2 end of input file 
+ - Total Transmission time : 4.45
+ - correct : 0
+ - duplicate : 0
+ - losses : 0
+ - incorrect : 1
+ - Total number of Transmission : 1
+ - Throughput : 0.00
+ - node2 Sends Message with id = 0 and Content = $Sherlock Holmes is a fictional detective$ at 3.00 Ack number 0
+ - node2 Sends Message with id = 1 and Content = $created by British author/$ Sir Arthur Conan Doyle.$ at 3.05 without Modification Ack number 0
+ - node3 Received Message with id = 0 and Content = $Sherlock Holmes is a fictional detective$ at 3.00 without Modification Ack number 0
+ - node3 Sends Message with id = 0 and Content = $A cherry blossom is a flower of many trees of genus/$ Prunus or Prunus subg.$ at 3.20 Delayed with time = 0.20 Ack number 1
+ - node3 Received Message with id = 1 and Content = $created by British author/$ Sir Arthur Conan Doyle.$ at 3.05 without Modification Ack number 0
+ - node3 Sends Message with id = 1 and Content = $They are also known as Japanese cherry and Sakura$ at 3.45 without Modification, started 0.2 later due to delay Ack number 2
+ - node2 Sends Message with id = 1 and Content = $created by British author/$ Sir Arthur Conan Doyle.$ at 3.06 without Modification Ack number 0
+ - node3 Received duplicate with id = 1 data : $created by British author/$ Sir Arthur Conan Doyle.$ , at  3.06
+ - node2 Received Message with id = 0 and Content = $A cherry blossom is a flower of many trees of genus/$ Prunus or Prunus subg.$ at 3.40 without Modification Ack number 1
+ - node2 drops Message with id = 2 at 3.60
+ - node2 Received Message with id = 1 and Content = $They are also known as Japanese cherry and Sakura$ at 3.45 without Modification Ack number 2
+ - node2 Sends Message with id = 3 and Content = $Holmes is known for his proficiency with observation,$ at 3.65 Ack number 2
+ - node3 Sends Message with id = 1 and Content = $They are also known as Japanese cherry and Sakura$ at 3.46 without Modification Ack number 2
+ - node2 Received duplicate with id = 1 data : $They are also known as Japanese cherry and Sakura$ , at  3.46
+ - node3 Received Message with id = 3 and Content = $Holmes is known for his proficiency with observation,$ at 3.65 without Modification Ack number 2
+ - node3 sends nack on 2 , at  3.65
+ - node2 Sends Message with id = 2 and Content = $Referring to himself as a// "consulting detective" in the stories,$ at 4.05 Ack number 2
+ - node3 got TimeOut on  0 at 4.00
+ - node3 Sends Message with id = 0 and Content = $A cherry blossom is a flower of many trees of genus/$ Prunus or Prunus subg.$ at 4.00 Ack number 2
+ - node2 Received duplicate with id = 0 data : $A cherry blossom is a flower of many trees of genus/$ Prunus or Prunus subg.$ , at  4.00
+ - node3 Received Message with id = 2 and Content = $Referring to himself as a// "consulting detective" in the stories,$ at 4.05 without Modification Ack number 2
+ - node3 Sends Message with id = 2 and Content = $They generally refer to /$ ornamental cherry trees,$ at 4.25 Ack number 4
+ - node2 Received Message with id = 2 and Content = $They generally refer to /$ ornamental cherry trees,$ at 4.25 without Modification Ack number 4
+ - node2 Sends Message with id = 4 and Content = $deduction, forensic science,$ at 4.45 Ack number 3
+ - node3 Received Message with id = 4 and Content = $deduction, forensic science,$ at 4.45 without Modification Ack number 3
+ - node3 Sends Message with id = 3 and Content = $not to be confused with cherry trees that// produce fruit for eating.$ at 4.65 Ack number 5
+ - node2 Received Message with id = 3 and Content = $not to be confused with cherry trees that// produce fruit for eating.$ at 4.65 without Modification Ack number 5
+ - node2 Sends Message with id = 5 and Content = $and// logical reasoning/$ that borders on the fantastic,$ at 4.85 Ack number 4
+ - node3 Received Message with id = 5 and Content = $and// logical reasoning/$ that borders on the fantastic,$ at 4.85 without Modification Ack number 4
+ - node3 Sends Message with id = 4 and Content = $It is considered// the nat)onal flower of Japan.$ at 5.05 with Modification Ack number 6
+ - node2 Received Message with id = 4 and Content = $It is considered// the nat)onal flower of Japan.$ at 5.05 with Modification Ack number 6
+ - node2 got TimeOut on  5 at 5.65
+ - node2 Sends Message with id = 5 and Content = $and// logical reasoning/$ that borders on the fantastic,$ at 5.65 Ack number 4
+ - node3 Received duplicate with id = 5 data : $and// logical reasoning/$ that borders on the fantastic,$ , at  5.65
+ - node3 got TimeOut on  4 at 5.85
+ - node3 Sends Message with id = 4 and Content = $It is considered// the national flower of Japan.$ at 5.85 Ack number 6
+ - node2 Received Message with id = 4 and Content = $It is considered// the national flower of Japan.$ at 5.85 without Modification Ack number 6
+ - node2 drops Message with id = 6 at 6.05
+ - node3 got TimeOut on  4 at 6.85
+ - node3 Sends Message with id = 4 and Content = $It is considered// the national flower of Japan.$ at 6.85 Ack number 6
+ - node2 got TimeOut on  6 at 6.85
+ - node2 Sends Message with id = 6 and Content = $which he employs when investigating cases for a wide variety of clients,$ at 6.85 Ack number 5
+ - node2 Received duplicate with id = 4 data : $It is considered// the national flower of Japan.$ , at  6.85
+ - node3 Received Message with id = 6 and Content = $which he employs when investigating cases for a wide variety of clients,$ at 6.85 without Modification Ack number 5
+ - node2 recieved ACK_TimeOut : 6 at 7.05 Ack number 7
+ - node2 Sends Message with id = 7 and Content = $including Scotland Yard.$ at 7.25 Ack number 5
+ - node3 Received Message with id = 7 and Content = $including Scotland Yard.$ at 7.25 without Modification Ack number 5
+ - node2 recieved ACK_TimeOut : 7 at 7.45 Ack number 8
+ ------------------------------------------------------------- 
+ - node2 end of input file 
+ - Total Transmission time : 4.45
+ - correct : 0
+ - duplicate : 0
+ - losses : 0
+ - incorrect : 1
+ - Total number of Transmission : 1
+ - Throughput : 0.00

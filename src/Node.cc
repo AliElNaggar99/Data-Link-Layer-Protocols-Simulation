@@ -20,7 +20,7 @@
 #include "utilities.h"
 #include <iomanip>
 Define_Module(Node);
-std::ofstream MyFile("out5.txt");
+//std::ofstream MyFile("out5.txt");
 
 void Node::handleMessage(cMessage *msg)
 {
@@ -98,7 +98,7 @@ void Node::handleMessage(cMessage *msg)
             // send nack on the left
             
             // TODO 2 : != framesRecieved.end() ? CHANGED TO == 
-            if(MsgRecived->getSeq_Num() > left_recieveBuffer && MsgRecived->getSeq_Num() <= right_sendBuffer 
+            if(MsgRecived->getSeq_Num() > left_recieveBuffer && MsgRecived->getSeq_Num() <= right_recieveBuffer 
             && framesRecieved.find(MsgRecived->getSeq_Num()) == framesRecieved.end())
             {
                 framesRecieved.insert(MsgRecived->getSeq_Num());
@@ -123,6 +123,9 @@ void Node::handleMessage(cMessage *msg)
                     return ;
                 }
             }else{
+                std::cout <<getName() << " get Seq sent ,  left_recieveBuffer , right_sendBuffer = " <<MsgRecived->getSeq_Num()
+                << " " << left_recieveBuffer<<" " << right_sendBuffer << std::endl ;
+
                 MyFile  <<" - "<<getName()<<" Received duplicate with id = " <<
                     std::to_string(MsgRecived->getSeq_Num()) << " data : " << MsgRecived->getM_Payload()
                     <<" , at " << " "<<(double)simTime().dbl() << endl;
@@ -667,13 +670,25 @@ void Node::Initial(cMessage *msg)
     ReadFromFile(MessageSplit[0]);
     isInitialized = true;
 
-    MyFile.close();
-    if( strcmp((getName()), "node0")==0 || strcmp((getName()), "node1")==0)
-        MyFile.open("pair01.txt");
-    else if(strcmp((getName()), "node2")==0 || strcmp((getName()), "node3")==0)
-        MyFile.open("pair23.txt");
-    else if(strcmp((getName()), "node4")==0 || strcmp((getName()), "node5")==0)
-            MyFile.open("pair45.txt");
+    //MyFile.close();
+    if(strcmp((getName()), "node0") == 0 || strcmp((getName()), "node1") == 0)
+    {
+        MyFile.open("pair01.txt",std::ofstream::out | std::ofstream::app);
+        remove("pair01.txt");
+    }
+
+    else if(strcmp((getName()), "node2") == 0 || strcmp((getName()), "node3") == 0)
+    {
+        MyFile.open("pair23.txt",std::ofstream::out | std::ofstream::app);
+        remove("pair23.txt");
+    }
+
+    else if(strcmp((getName()), "node4") == 0 || strcmp((getName()), "node5") == 0)
+    {
+        MyFile.open("pair45.txt",std::ofstream::out | std::ofstream::app);
+        remove("pair45.txt");
+    }
+
 
 //    std::string filePath ="E:/5th Semester CCE/Computer Networks/Project/Project Code/Data-Link-Layer-Protocols-Simulation/simulations/" + filename;
 
@@ -693,7 +708,7 @@ void Node::Initial(cMessage *msg)
 void Node::ReadFromFile(std::string FileName )
 {
     //"E:/5th Semester CCE/Computer Networks/Project/Project Code/Data-Link-Layer-Protocols-Simulation/inputs_samples/coordinator.txt";
-    std::string location = "E:/5th Semester CCE/Computer Networks/Project/Project Code/Data-Link-Layer-Protocols-Simulation/inputs_samples/" + FileName;
+    std::string location = "D:/Downloads/Compressed/omnetpp-5.7-windows-x86_64/omnetpp-5.7/samples/Data-Link-Layer-Protocols-Simulation/inputs_samples/" + FileName;
     std::ifstream file(location);
     std::string str;
 
