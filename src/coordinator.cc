@@ -38,16 +38,19 @@ void Coordinator::handleMessage(cMessage *msg)
     std::ifstream file (location);
     std::string str; 
 
+    std::string names [6] = {"pair01.txt","pair01.txt","pair23.txt","pair23.txt","pair45.txt","pair45.txt"};
+    int i = 0;
     while (std::getline(file, str))
     {
         // Process str
         //get node number to give it a message of its informations
         std::string Gate = "out" + str.substr(0,1);
-        std::string Rest_Message = str.substr(2,str.size());
+        std::string Rest_Message = str.substr(2,str.size()) + " " + names[i++];
         cMessage* newMsg = new cMessage();
         newMsg->setName(Rest_Message.c_str());
         send(newMsg,Gate.c_str());
     }
+
 
 }
 

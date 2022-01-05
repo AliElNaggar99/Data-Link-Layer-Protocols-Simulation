@@ -27,7 +27,7 @@ void Node::handleMessage(cMessage *msg)
     /////////////
     //Cancel and Delete don't forget
 
-    MyFile << std::fixed << std::setprecision(2);
+
     //MyFile.open("pair01.txt");
 
 
@@ -38,6 +38,7 @@ void Node::handleMessage(cMessage *msg)
         return;
     }
 
+    MyFile << std::fixed << std::setprecision(2);
     MyMessage_Base* MsgRecived = (MyMessage_Base*) msg;
 
     std::cout<<"Message ID: "<< MsgRecived->getSeq_Num() << " " << getName() << " " <<to_string(MsgRecived->getM_Type())<<endl; 
@@ -260,7 +261,7 @@ void Node::handleMessage(cMessage *msg)
         std::cout << "recieved timeout for " << MsgRecived->getSeq_Num() << ".. will check now " << endl ;
         // first we need to check if this timeout will be cancelled since i recieved ack from reciever
         if(MsgRecived->getSeq_Num() == left_sendBuffer){
-            MyFile<<" - "<<getName()<<" got TimeOut on  "<< to_string(MsgRecived->getSeq_Num()) <<" at "<<((double)simTime().dbl())<< " Ack number " << std::to_string(MsgRecived->getAckId()) <<endl;
+            MyFile<<" - "<<getName()<<" got TimeOut on  "<< to_string(MsgRecived->getSeq_Num()) <<" at "<<((double)simTime().dbl())<< endl;
             // so need to send it again
             std::cout << MsgRecived->getSeq_Num() << " Timed out !" << std::endl;
             SendOneMsg(MsgRecived->getSeq_Num(),0,DATA_RETRANSMISSION); // since that sequence number = index
@@ -666,12 +667,22 @@ void Node::Initial(cMessage *msg)
     ReadFromFile(MessageSplit[0]);
     isInitialized = true;
 
+    MyFile.close();
+    if( strcmp((getName()), "node0")==0 || strcmp((getName()), "node1")==0)
+        MyFile.open("pair01.txt");
+    else if(strcmp((getName()), "node2")==0 || strcmp((getName()), "node3")==0)
+        MyFile.open("pair23.txt");
+    else if(strcmp((getName()), "node4")==0 || strcmp((getName()), "node5")==0)
+            MyFile.open("pair45.txt");
+
+//    std::string filePath ="E:/5th Semester CCE/Computer Networks/Project/Project Code/Data-Link-Layer-Protocols-Simulation/simulations/" + filename;
+
     //Greater than One means it contains more than the input file name
-    if (MessageSplit.size() > 1) // sender
+    if (MessageSplit.size() > 2) // sender
     {
 
         //get last digit in the string as it represent the start time
-        int Start = std::stoi(MessageSplit[MessageSplit.size() - 1]);
+        int Start = std::stoi(MessageSplit[MessageSplit.size() - 2]);
         startTime = Start;
         MyMessage_Base *myMsg = new MyMessage_Base();
         myMsg->setM_Type(Self_Message);
@@ -713,6 +724,7 @@ void Node::PrintOutput()
     MyFile << " - " << "Total number of Transmission : " << correct + duplicate + losses + incorrect << std::endl ;
     MyFile << " - " << "Throughput : " <<  (double)correct /  ((double)simTime().dbl()-startTime) << std::endl;
     std::cout<<"Finished"<<std::endl;
+    MyFile.flush();
     MyFile.close();
     return;
 }

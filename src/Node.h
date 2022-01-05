@@ -15,7 +15,7 @@
 
 #ifndef __DATA_LINK_LAYER_PROTOCOLS_SIMULATION_NODE_H_
 #define __DATA_LINK_LAYER_PROTOCOLS_SIMULATION_NODE_H_
-
+#include <fstream>
 #include <omnetpp.h>
 #include "MyMessage_m.h"
 #include <set>
@@ -56,6 +56,9 @@ class Node : public cSimpleModule
 
   double WindowsDelay = 0.0;
 
+
+  std::string filename = "pair01.txt";
+//  std::ofstream MyFile;
 
 protected:
   virtual void initialize();
